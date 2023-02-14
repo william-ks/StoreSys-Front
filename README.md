@@ -1,5 +1,3 @@
-# App
+# StoreSys Front
 
-## Routes
-- Loja
--- 
+Aplicação Front end para integração em API para gestão de lojas.
