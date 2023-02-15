@@ -13,6 +13,7 @@
               ref="email"
               id="email"
               placeholder="email@exemplo.com"
+              required
             />
           </label>
 
@@ -24,6 +25,7 @@
                 ref="pass"
                 id="password"
                 :placeholder="seePass ? 'senhaExemplo123' : '••••••••••••'"
+                required
               />
 
               <span class="eyes" v-on:click="changeView">
@@ -33,8 +35,8 @@
             </div>
           </label>
 
-          <button v-if="!loading" class="button">Entrar</button>
-          <button v-else class="button">
+          <button v-show="!loading" class="button">Entrar</button>
+          <button v-show="loading" disabled class="button">
             <Icon name="svg-spinners:bars-scale" />
           </button>
         </form>
@@ -43,15 +45,20 @@
   </main>
 </template>
 
-<script setup>
+<script>
+import { create, read, del } from "@/composables/localStorage";
+
 definePageMeta({
   layout: false,
 });
-</script>
 
-<script>
 export default {
   name: "Login Page",
+  setup() {
+    const env = useRuntimeConfig();
+
+    return { env };
+  },
   data() {
     return {
       seePass: false,
@@ -62,23 +69,89 @@ export default {
     changeView() {
       this.seePass = !this.seePass;
     },
-    handleSubmit(e) {
+
+    async handleSubmit(e) {
       e.preventDefault();
       if (this.loading) {
         return;
       }
 
+      const form = {
+        email: this.$refs.email.value,
+        password: this.$refs.pass.value,
+      };
+
       try {
         this.loading = true;
+
+        const { data, error } = await useFetch(
+          `${this.env.public.apiBase}/login`,
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: { ...form },
+          }
+        );
+
+        if (error.value) {
+          throw error;
+        }
+
+        create("user", JSON.stringify(data._value.user));
+        create("token", data._value.token);
+
+        this.$refs.email.value = "";
+        this.$refs.pass.value = "";
+
+        navigateTo("/store/products");
       } catch (e) {
-        alert("Error");
+        alert(e.value.data.message);
+        return;
       } finally {
-        setTimeout(() => {
-          this.loading = false;
-          navigateTo("/store/home");
-        }, 1500);
+        this.loading = false;
       }
     },
+  },
+  async mounted() {
+    const token = read("token");
+    const user = read("user");
+
+    if (!token || !user) {
+      return;
+    }
+
+    if (this.loading) {
+      return;
+    }
+
+    try {
+      this.loading = true;
+
+      const { error } = await useFetch(
+        `${this.env.public.apiBase}/user`,
+        {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      if (error.value) {
+        throw error;
+      }
+
+      navigateTo("/store/products");
+    } catch (e) {
+      del("token");
+      del("user");
+      return;
+    } finally {
+      this.loading = false;
+    }
   },
 };
 </script>
