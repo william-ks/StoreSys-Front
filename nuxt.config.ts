@@ -1,5 +1,6 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
+  ssr: true,
   modules: [
     "nuxt-icon",
     [
@@ -12,4 +13,9 @@ export default defineNuxtConfig({
     ],
   ],
   css: ["@/assets/css/global.css"],
+  runtimeConfig: {
+    public: {
+      apiBase: process.env.API_BASE_URL,
+    },
+  },
 });
