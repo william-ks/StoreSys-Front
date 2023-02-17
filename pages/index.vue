@@ -46,7 +46,7 @@
 </template>
 
 <script>
-import { create, read, del } from "@/composables/localStorage";
+import { create, read, del } from "~~/composables/local";
 
 definePageMeta({
   layout: false,
@@ -99,7 +99,7 @@ export default {
           throw error;
         }
 
-        create("user", JSON.stringify(data._value.user));
+        create("user", data._value.user.name);
         create("token", data._value.token);
 
         this.$refs.email.value = "";
@@ -129,16 +129,13 @@ export default {
     try {
       this.loading = true;
 
-      const { error } = await useFetch(
-        `${this.env.public.apiBase}/user`,
-        {
-          method: "GET",
-          headers: {
-            "Content-Type": "application/json",
-            authorization: `Bearer ${token}`,
-          },
-        }
-      );
+      const { error } = await useFetch(`${this.env.public.apiBase}/user`, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          authorization: `Bearer ${token}`,
+        },
+      });
 
       if (error.value) {
         throw error;
