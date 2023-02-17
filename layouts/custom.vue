@@ -2,6 +2,7 @@
   <div class="custom">
     <SideBar :sideBar="openedSideBar" @toggleSide="toggleSideBar" />
     <main class="content">
+      <Header />
       <slot />
     </main>
   </div>
@@ -16,7 +17,6 @@ export default {
   },
   methods: {
     toggleSideBar() {
-      console.log("ok");
       this.openedSideBar = !this.openedSideBar;
     },
   },
