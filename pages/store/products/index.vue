@@ -1,15 +1,12 @@
 <template>
   <div class="content">
-    <Header>Produtos</Header>
-    <div class="center">
-      <div class="subHeader">
+    <div class="subHeader">
+      <div class="opts">
         <button @click="toggleFilters" class="button filterButton">
+          <Icon v-show="showFilters" :name="'ic:outline-filter-alt'" />
           <Icon
-            :name="
-              showFilters
-                ? 'ic:outline-filter-alt'
-                : 'material-symbols:filter-alt-off'
-            "
+            v-show="!showFilters"
+            :name="'material-symbols:filter-alt-off'"
           />
         </button>
         <button class="button bt">Adicionar um produto</button>
@@ -22,16 +19,16 @@
           <option value="">Camisetas</option>
         </select>
       </div>
-
-      <ul class="products">
-        <li>
-          <CardP />
-        </li>
-        <li>
-          <CardP />
-        </li>
-        <li>
-          <CardP />
+    </div>
+    <div class="center">
+      <ul class="products" v-if="productsList">
+        <li v-for="item of productsList" :key="item.id">
+          <CardP
+            :id="item.id"
+            :title="item.name"
+            :image="item.image.url"
+            :stock="item.stock"
+          />
         </li>
       </ul>
     </div>
@@ -39,20 +36,58 @@
 </template>
 
 <script>
+import { read } from "@/composables/local";
+
 definePageMeta({
   layout: "custom",
 });
 
 export default {
+  setup() {
+    const env = useRuntimeConfig();
+
+    return {
+      env,
+    };
+  },
   data() {
     return {
-      showFilters: true,
+      showFilters: false,
+      productsList: [],
     };
   },
   methods: {
     toggleFilters() {
       this.showFilters = !this.showFilters;
     },
+
+    async downloadData() {
+      try {
+        const token = read("token");
+
+        const { error, data } = await useFetch(
+          `${this.env.public.apiBase}/product`,
+          {
+            method: "GET",
+            headers: {
+              "Content-Type": "application/json",
+              authorization: `Bearer ${token}`,
+            },
+          }
+        );
+
+        if (error.value) {
+          throw error;
+        }
+
+        this.productsList = [...data.value];
+      } catch (e) {
+        throw e;
+      }
+    },
+  },
+  mounted() {
+    this.downloadData();
   },
 };
 </script>
@@ -62,7 +97,10 @@ export default {
   width: 100%;
   height: 100%;
   padding: 10px 0;
+  background: rgb(247, 247, 247);
+}
 
+.subHeader .opts {
   display: flex;
   justify-content: center;
   align-items: center;
@@ -70,8 +108,15 @@ export default {
 }
 
 .bt {
-  background-color: #006bc8;
+  background-color: #ffffff;
+  border: 1px solid rgb(30, 30, 30);
+  color: rgb(30, 30, 30);
   font-weight: 300;
+}
+
+.bt:hover {
+  background-color: rgb(60, 60, 60);
+  color: white;
 }
 
 .filterButton {
@@ -101,14 +146,13 @@ export default {
   margin-top: 45px;
   width: 100%;
   display: flex;
-  flex-direction: column;
+  flex-wrap: wrap;
   justify-content: center;
   align-items: center;
-  gap: 15px;
+  gap: 20px;
 }
 
 .products li {
-  width: 100%;
   display: flex;
   justify-content: center;
   align-items: center;
