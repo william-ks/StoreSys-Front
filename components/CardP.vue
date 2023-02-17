@@ -1,21 +1,23 @@
 <template>
   <div class="cardProduct">
+    <ConfirmModal v-if="confirmModalB" @yes="del" @close="change" />
     <div class="flex">
       <div class="image">
-        <img src="@/assets/imgs/pikachu.jpeg" alt="product" />
+        <img :src="image ?? '@/assets/imgs/pikachu.jpeg'" alt="product" />
       </div>
 
       <div class="description">
-        <h2 class="name">Pikachu com efeito</h2>
-        <p class="stock">Em estoque: 3</p>
+        <h2 class="name">{{ title }}</h2>
+        <p class="stock">Em estoque: {{ stock }}</p>
       </div>
     </div>
 
     <div class="options">
-      <button class="button opt">
+      <button @click="toEdit" class="button opt">
         <Icon name="material-symbols:edit" />
       </button>
-      <button class="button opt">
+
+      <button @click="change" class="button opt">
         <Icon name="bi:trash3" />
       </button>
     </div>
@@ -24,11 +26,28 @@
 
 <script>
 export default {
+  data() {
+    return {
+      confirmModalB: false,
+    };
+  },
   name: "cardProduct",
   props: {
+    id: Number,
     title: String,
     image: String,
     stock: Number,
+  },
+  methods: {
+    change() {
+      this.confirmModalB = !this.confirmModalB;
+    },
+    async del() {
+      console.log(`Produto de id=${this.id} deletado`);
+    },
+    toEdit() {
+      navigateTo(`/store/products/edit/${this.id}`);
+    },
   },
 };
 </script>
@@ -36,7 +55,8 @@ export default {
 <style scoped>
 .cardProduct {
   background-color: white;
-  width: clamp(170px, 90%, 800px);
+  width: 200px;
+  height: 325px;
 
   display: flex;
   justify-content: space-between;
@@ -44,39 +64,44 @@ export default {
   padding: 15px;
 
   border-radius: 10px;
-  box-shadow: 0 5px 10px rgba(0, 0, 0, 0.212);
+  box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
   border: 1px solid #ccc;
-  user-select: none;
 
-  transition: transform 0.25s;
+  flex-direction: column;
+  transition: box-shadow 0.25s;
 }
 
 .cardProduct:hover {
-  transform: scale(1.02);
+  box-shadow: 0 5px 10px rgba(0, 0, 0, 0.3);
 }
 
 .flex {
+  width: 100%;
   display: flex;
+  text-align: center;
+  flex-direction: column;
   justify-content: space-between;
   align-items: center;
   gap: 15px;
 }
 
 .cardProduct .name {
-  font-size: 1.5rem;
+  margin-top: -8px;
+  font-size: 1.3rem;
   font-weight: 300;
 }
 
 .cardProduct .stock {
-  margin-top: -8px;
   color: gray;
   font-weight: 200;
 }
 
 .image {
-  max-width: 100px;
-  max-height: 100px;
+  width: 150px;
+  height: 150px;
+
   border-radius: 8px;
+  background: #ccc;
   overflow: hidden;
 
   display: flex;
@@ -88,9 +113,14 @@ export default {
 .image img {
   width: 100%;
   height: 100%;
+  min-width: 100%;
+  min-height: 100%;
+  user-select: none;
 }
 
 .options {
+  cursor: pointer;
+  user-select: none;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -106,23 +136,7 @@ export default {
   color: rgb(54, 54, 54);
 }
 
-@media screen and (max-width: 500px) {
-  .flex {
-    flex-direction: column;
-    text-align: center;
-  }
-
-  .cardProduct .name {
-    font-size: 1.3rem;
-    font-weight: 400;
-  }
-
-  .cardProduct .stock {
-    margin-top: -4px;
-  }
-
-  .options {
-    margin-top: 15px;
-  }
+.options {
+  margin-top: 15px;
 }
 </style>
