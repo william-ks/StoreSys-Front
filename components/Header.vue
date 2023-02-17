@@ -1,15 +1,27 @@
 <template>
   <header>
     <div class="center">
-      <h2 class="titlePage">
-        <slot />
-      </h2>
+      <NuxtLink to="/" class="userName">
+        <Icon name="ph:user-circle" />
+        {{ user }}
+      </NuxtLink>
     </div>
   </header>
 </template>
 
 <script>
-export default {};
+import { read } from "@/composables/local";
+
+export default {
+  data() {
+    return {
+      user: "user",
+    };
+  },
+  mounted() {
+    this.user = read("user");
+  },
+};
 </script>
 
 <style scoped>
@@ -25,14 +37,20 @@ header {
 
 header > .center {
   display: flex;
-  justify-content: space-between;
+  justify-content: flex-end;
   align-content: center;
 }
+.userName {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 5px;
 
-.titlePage {
-  width: 100%;
   font-weight: 300;
-  font-size: 2rem;
-  text-align: center;
+  font-size: 1.1rem;
+  text-transform: capitalize;
+}
+.userName svg {
+  font-size: 1.5rem;
 }
 </style>
