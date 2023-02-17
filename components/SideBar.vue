@@ -5,7 +5,42 @@
         <SideButton @toggleSide="$emit('toggleSide')" />
       </button>
     </header>
-    <h2 class="name">William</h2>
+    <nav>
+      <ul>
+        <li>
+          <NuxtLink to="/">
+            <span>
+              <Icon name="game-icons:take-my-money" />
+            </span>
+            <span> Vendas</span>
+          </NuxtLink>
+        </li>
+        <li>
+          <NuxtLink to="/">
+            <span>
+              <Icon name="fluent-mdl2:product" />
+            </span>
+            <span>Estoque</span>
+          </NuxtLink>
+        </li>
+        <li>
+          <NuxtLink to="/">
+            <span>
+              <Icon name="mi:users" />
+            </span>
+            <span>Usuários</span>
+          </NuxtLink>
+        </li>
+        <li>
+          <NuxtLink to="/">
+            <span>
+              <Icon name="ph:chart-line" />
+            </span>
+            <span>Relatórios</span>
+          </NuxtLink>
+        </li>
+      </ul>
+    </nav>
   </aside>
 </template>
 
@@ -19,7 +54,7 @@ export default {
 
 <style scoped>
 aside {
-  width: 35px;
+  width: 40px;
   min-height: 100vh;
 
   position: fixed;
@@ -27,7 +62,7 @@ aside {
   top: 0;
   z-index: 10;
 
-  background-color: rgb(26, 26, 46);
+  background-color: rgb(30, 30, 35);
 
   color: rgb(233, 239, 243);
   overflow: hidden;
@@ -42,9 +77,9 @@ aside header {
   display: flex;
   justify-content: flex-start;
   align-items: flex-start;
-  background-color: rgb(31, 31, 48);
+  background-color: rgb(30, 30, 35);
   border-bottom: 1px solid rgb(46, 46, 61);
-  padding: 10px 0;
+  padding: 15px 0;
 }
 
 button {
@@ -53,6 +88,46 @@ button {
 }
 
 aside.show {
-  width: clamp(150px, 60%, 350px);
+  width: clamp(200px, 60%, 350px);
+}
+
+nav,
+ul {
+  width: 100%;
+}
+
+ul {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: flex-start;
+}
+
+ul li {
+  width: 100%;
+}
+
+ul li a {
+  padding: 35px 5px;
+  display: flex;
+  width: 100%;
+  justify-content: flex-start;
+  align-items: center;
+  gap: 20px;
+
+  font-size: 1.3rem;
+  font-weight: 200;
+
+  border-bottom: 1px solid rgb(46, 46, 61);
+}
+
+ul li a:hover {
+  color: white;
+  text-shadow: 0 0 5px;
+  background-color: rgb(45, 45, 50);
+}
+
+ul li a svg {
+  font-size: 1.6rem;
 }
 </style>
