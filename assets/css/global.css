@@ -111,7 +111,11 @@ button.button {
     box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1);
 }
 
-button.button:active {
+button.button:disabled {
+    cursor: not-allowed;
+}
+
+button.button:not(:disabled):active {
     transform: scale(0.96);
     box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
 }
