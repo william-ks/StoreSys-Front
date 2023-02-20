@@ -88,5 +88,11 @@ button.no {
   background: white;
 
   color: rgb(30, 30, 30);
+  transition: background 0.15s, color 0.15s;
+}
+
+button.no:hover {
+  color: white;
+  background: rgb(30, 30, 30);
 }
 </style>

@@ -9,6 +9,7 @@
       <div class="description">
         <h2 class="name">{{ title }}</h2>
         <p class="stock">Em estoque: {{ stock }}</p>
+        <p class="price">{{ price }}</p>
       </div>
     </div>
 
@@ -25,10 +26,20 @@
 </template>
 
 <script>
+import { read } from "@/composables/local";
+
 export default {
+  setup() {
+    const env = useRuntimeConfig();
+
+    return {
+      env,
+    };
+  },
   data() {
     return {
       confirmModalB: false,
+      token: `Bearer ${read("token")}`,
     };
   },
   name: "cardProduct",
@@ -37,13 +48,34 @@ export default {
     title: String,
     image: String,
     stock: Number,
+    price: String,
   },
   methods: {
     change() {
       this.confirmModalB = !this.confirmModalB;
     },
     async del() {
-      console.log(`Produto de id=${this.id} deletado`);
+      try {
+        const { error } = await useFetch(
+          `${this.env.public.apiBase}/product/${this.id}`,
+          {
+            method: "DELETE",
+            headers: {
+              authorization: this.token,
+            },
+          }
+        );
+
+        if (error.value) {
+          throw error;
+        }
+
+        this.$emit("deleted");
+      } catch (e) {
+        alert("Erro ao excluir produto");
+      } finally {
+        this.change();
+      }
     },
     toEdit() {
       navigateTo(`/store/products/edit/${this.id}`);
@@ -56,7 +88,7 @@ export default {
 .cardProduct {
   background-color: white;
   width: 200px;
-  height: 325px;
+  height: 370px;
 
   display: flex;
   justify-content: space-between;
@@ -118,6 +150,12 @@ export default {
   user-select: none;
 }
 
+.description {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+}
+
 .options {
   cursor: pointer;
   user-select: none;
@@ -125,6 +163,12 @@ export default {
   justify-content: center;
   align-items: center;
   gap: 15px;
+}
+
+.price {
+  margin-top: 10px;
+  font-size: 1.3rem;
+  font-weight: 200;
 }
 
 .opt {

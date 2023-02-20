@@ -28,6 +28,8 @@
             :title="item.name"
             :image="item.image.url"
             :stock="item.stock"
+            :price="formatToPrice(item.value / 100)"
+            @deleted="downloadData"
           />
         </li>
       </ul>
@@ -63,6 +65,7 @@ export default {
 
     async downloadData() {
       try {
+        this.productsList = [];
         const token = read("token");
 
         const { error, data } = await useFetch(
@@ -79,7 +82,6 @@ export default {
         if (error.value) {
           throw error;
         }
-
         this.productsList = [...data.value];
       } catch (e) {
         throw e;

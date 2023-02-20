@@ -29,8 +29,8 @@
               />
 
               <span class="eyes" v-on:click="changeView">
-                <Icon v-if="!seePass" name="mdi:eye-off" />
-                <Icon v-else name="mdi:eye" />
+                <Icon v-show="!seePass" name="mdi:eye-off" />
+                <Icon v-show="seePass" name="mdi:eye" />
               </span>
             </div>
           </label>
@@ -219,7 +219,12 @@ form {
   border-bottom-left-radius: 6px;
 }
 
+input {
+  user-select: none !important;
+}
+
 .eyes {
+  cursor: pointer;
   font-size: 25px;
   padding: 2px 5px 0 5px;
   height: 45px;

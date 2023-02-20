@@ -1,6 +1,6 @@
 <template>
   <div class="main">
-    <h1 class="pageTitle">Editar Produto</h1>
+    <h1 class="pageTitle">Cadastrar Novo Produto</h1>
 
     <form class="form">
       <label for="title">
@@ -55,7 +55,9 @@
       </div>
     </form>
     <div class="buttons">
-      <button @click="handleSubmit" class="button">Atualizar</button>
+      <button @click="handleSubmit" :disabled="!file" class="button">
+        Cadastrar
+      </button>
       <button class="button cancel" @click="cancel">Cancelar</button>
     </div>
   </div>
@@ -86,16 +88,8 @@ export default {
   },
   data() {
     return {
-      id: this.$route.params.id,
       token: `Bearer ${read("token")}`,
     };
-  },
-  mounted() {
-    if (!Number(this.id)) {
-      navigateTo("/store/products");
-    }
-
-    this.getThisProduct();
   },
   methods: {
     removeImage() {
@@ -130,35 +124,6 @@ export default {
         return;
       }
     },
-    async getThisProduct() {
-      try {
-        const { error, data } = await useFetch(
-          `${this.env.public.apiBase}/product/${this.id}`,
-          {
-            headers: {
-              authorization: this.token,
-            },
-          }
-        );
-
-        if (error.value) {
-          throw error;
-        }
-
-        this.$refs.title.value = data.value.name;
-        this.$refs.stock.value = data.value.stock;
-        this.$refs.price.value = data.value.value / 100;
-        this.$refs.category.value = data.value.category_id;
-
-        this.setImage({
-          url: data.value.image.url,
-          path: data.value.image.path,
-        });
-      } catch (e) {
-        alert("Ocorreu um erro ao ler as informações do produto.");
-        return;
-      }
-    },
 
     async handleSubmit(e) {
       e.preventDefault();
@@ -174,9 +139,9 @@ export default {
 
       try {
         const { error, data } = await useFetch(
-          `${this.env.public.apiBase}/product/${this.id}`,
+          `${this.env.public.apiBase}/product`,
           {
-            method: "PUT",
+            method: "POST",
             headers: {
               authorization: this.token,
             },
@@ -193,11 +158,11 @@ export default {
         alert("Ocorreu um erro ao salvar o produto");
         return;
       }
-    },
+      },
 
-    cancel() {
-      navigateTo("/store/products");
-    },
+      cancel() {
+        navigateTo('/store/products')
+      }
   },
   watch: {
     file(newValue, oldValue) {
