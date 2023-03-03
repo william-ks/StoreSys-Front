@@ -3,7 +3,9 @@
     <SideBar :sideBar="openedSideBar" @toggleSide="toggleSideBar" />
     <main class="content">
       <Header />
-      <slot />
+      <div class="full">
+        <slot />
+      </div>
     </main>
   </div>
 </template>
@@ -34,7 +36,12 @@ export default {
 
 .content {
   width: 100%;
-  height: 100vh;
+  min-height: 100vh;
   padding-left: 35px;
+}
+
+.full{
+  width: 100%;
+  padding-bottom: 15px;
 }
 </style>

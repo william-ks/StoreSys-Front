@@ -1,20 +1,22 @@
 <template>
   <div class="main">
-    <h1 class="pageTitle">Cadastrar Novo Produto</h1>
+    <h1 class="pageTitle">Cadastrar Produto</h1>
 
     <form class="form">
-      <label for="title">
-        <p class="inputDesc">Título</p>
-        <input ref="title" type="text" id="title" />
-      </label>
-      <label for="categories">
-        <p class="inputDesc">Categoria</p>
-        <select ref="category" name="categories" id="categories">
-          <option value="1">Saias</option>
-          <option value="2">Roupas</option>
-        </select>
-      </label>
-      <label for="">
+      <div class="flexing">
+        <label for="title">
+          <p class="inputDesc">Título</p>
+          <input ref="title" type="text" id="title" />
+        </label>
+        <label for="categories" class="categories">
+          <p class="inputDesc">Categoria</p>
+          <select ref="category" name="categories" class="categories" id="categories">
+            <option value="1">Saias</option>
+            <option value="2">Roupas</option>
+          </select>
+        </label>
+      </div>
+      <label for="" class="labelPrice">
         <p class="inputDesc">Preço</p>
         <div class="float">
           <input ref="price" type="text" />
@@ -55,9 +57,7 @@
       </div>
     </form>
     <div class="buttons">
-      <button @click="handleSubmit" :disabled="!file" class="button">
-        Cadastrar
-      </button>
+      <button @click="handleSubmit" class="button">Cadastrar</button>
       <button class="button cancel" @click="cancel">Cancelar</button>
     </div>
   </div>
@@ -158,11 +158,11 @@ export default {
         alert("Ocorreu um erro ao salvar o produto");
         return;
       }
-      },
+    },
 
-      cancel() {
-        navigateTo('/store/products')
-      }
+    cancel() {
+      navigateTo("/store/products");
+    },
   },
   watch: {
     file(newValue, oldValue) {
@@ -180,6 +180,8 @@ export default {
   min-height: 80vh;
   padding: 15px 4%;
   background-color: white;
+    box-shadow: 0 5px 10px rgba(0, 0, 0, 0.233);
+
 
   display: flex;
   flex-direction: column;
@@ -223,6 +225,27 @@ export default {
 
 .form {
   width: 100%;
+  display: flex;
+  justify-content: flex-start;
+  align-items: flex-start;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.flexing {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 15px;
+}
+
+.flexing label:first-of-type {
+  flex-grow: 1;
+}
+
+.flexing label:last-of-type {
+  width: auto;
 }
 
 p.inputDesc {
@@ -231,6 +254,22 @@ p.inputDesc {
   color: rgb(63, 63, 63);
 }
 
+.labelPrice {
+  position: relative;
+}
+
+.labelPrice span {
+  position: absolute;
+  left: 5px;
+  top: 33px;
+  font-weight: 300;
+  font-size: 1.2rem;
+  color: rgb(173, 173, 173);
+}
+
+.labelPrice input {
+  padding-left: 35px;
+}
 .fileLabel {
   position: relative;
   user-select: none;
@@ -302,5 +341,35 @@ img.image {
 .removeImage svg {
   widows: 25px;
   height: 25px;
+}
+
+@media screen and (max-width: 550px) {
+  .flexing {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: flex-start;
+    gap: 15px;
+  }
+
+  select{
+    border:  1px solid #ccc;
+  }
+
+  .categories {
+    width: 100% !important;
+  }
+
+  .flexing label:first-of-type {
+    flex-grow: 0;
+  }
+  .buttons {
+    flex-direction: column;
+  }
+
+  .inputFileDiv {
+    margin: 0 auto;
+  }
 }
 </style>

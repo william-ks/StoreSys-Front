@@ -9,7 +9,9 @@
             :name="'material-symbols:filter-alt-off'"
           />
         </button>
-        <button class="button bt">Adicionar um produto</button>
+        <button class="button bt" @click="navigateTo('/store/products/create')">
+          Adicionar um produto
+        </button>
       </div>
       <div :class="{ filter: true, show: showFilters }">
         <input type="text" class="productInput" placeholder="Nome do produto" />
@@ -97,7 +99,6 @@ export default {
 <style scoped>
 .subHeader {
   width: 100%;
-  height: 100%;
   padding: 10px 0;
   background: rgb(247, 247, 247);
 }
