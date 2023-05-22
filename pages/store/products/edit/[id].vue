@@ -6,44 +6,47 @@
       <div class="flexing">
         <label for="title">
           <p class="inputDesc">Título</p>
-          <input ref="title" type="text" id="title" />
+          <input ref="title" placeholder="Nome do produto" type="text" id="title" />
+        </label>
+
+        <label for="cod">
+          <p class="inputDesc">Código</p>
+          <input ref="code" placeholder="123" type="text" id="cod" />
         </label>
 
         <label for="categories" class="categories">
           <p class="inputDesc">Categoria</p>
-          <select
-            ref="category"
-            name="categories"
-            class="categories"
-            id="categories"
-          >
-            <option value="1">Saias</option>
-            <option value="2">Roupas</option>
+          <select ref="category" name="categories" class="categories" id="categories">
+            <option value="">Todos</option>
+            <option :value="category.id" v-for="category of categoriesList" :key="category.id">
+              {{ category.description }}
+            </option>
           </select>
         </label>
       </div>
 
-      <label for="" class="labelPrice">
+      <label for="price" class="labelPrice">
         <p class="inputDesc">Preço</p>
         <div class="float">
-          <input ref="price" type="text" />
+          <input ref="price" id="price" placeholder="0,00" type="text" />
           <span>R$</span>
         </div>
       </label>
 
-      <label for="">
+      <label for="stock">
         <p class="inputDesc">Estoque</p>
-        <input ref="stock" type="text" />
+        <input ref="stock" id="stock" type="text" placeholder="0" />
       </label>
 
-      <div class="inputFileDiv">
-        <p class="inputDesc">Adicionar Foto</p>
+      <label for="description">
+        <textarea ref="description" id="description" placeholder="Descrição..."></textarea>
+      </label>
 
-        <label
-          class="fileLabel"
-          @change="(e) => setFile(e.target.files[0])"
-          for="inputFile"
-        >
+
+      <div class="inputFileDiv">
+        <p class="inputDesc">Adicionar Foto:</p>
+
+        <label class="fileLabel" @change="(e) => setFile(e.target.files[0])" for="inputFile">
           <div :class="{ iconGroup: true, point: !image.url }">
             <div class="imageDiv" v-if="image.url">
               <img :src="image.url" alt="" class="image" />
@@ -55,12 +58,7 @@
             <Icon class="imageIcon" v-else name="lucide:image-plus" />
           </div>
 
-          <input
-            type="file"
-            id="inputFile"
-            class="inputFile"
-            :disabled="image.url ? true : false"
-          />
+          <input type="file" id="inputFile" class="inputFile" :disabled="image.url ? true : false" />
         </label>
       </div>
     </form>
@@ -70,13 +68,14 @@
     </div>
   </div>
 </template>
-
+  
 <script>
 import state from "@/composables/state";
-import { read } from "@/composables/local";
+import categoriesFunctions from '~/composables/contextFunctions/categoriesFunctions';
+import productsFunctions from '~/composables/contextFunctions/productsFunctions';
 
-definePageMeta({
-  layout: "custom",
+useSeoMeta({
+  title: 'Editar Produto',
 });
 
 export default {
@@ -97,16 +96,10 @@ export default {
   data() {
     return {
       id: this.$route.params.id,
-      token: `Bearer ${read("token")}`,
+      categoriesList: []
     };
   },
-  mounted() {
-    if (!Number(this.id)) {
-      navigateTo("/store/products");
-    }
 
-    this.getThisProduct();
-  },
   methods: {
     removeImage() {
       this.setFile("");
@@ -119,22 +112,13 @@ export default {
       dataForm.append("image", this.file);
 
       try {
-        const { error, data } = await useFetch(
-          `${this.env.public.apiBase}/product/image`,
-          {
-            method: "POST",
-            headers: {
-              authorization: this.token,
-            },
-            body: dataForm,
-          }
-        );
+        const response = await productsFunctions.uploadImg(dataForm);
 
-        if (error.value) {
-          throw error;
+        if (response.code === 400) {
+          throw new Error(response.content);
         }
 
-        this.setImage({ ...data.value });
+        this.setImage({ ...response.content });
       } catch (e) {
         alert("Ocorreu um erro ao enviar a imagem.");
         return;
@@ -178,24 +162,17 @@ export default {
         value: Number(this.$refs.price.value) * 100,
         stock: Number(this.$refs.stock.value),
         category_id: Number(this.$refs.category.value),
+        code: Number(this.$refs.code.value),
+        description: this.$refs.description.value,
         url: this.image.url,
         path: this.image.path,
       };
 
       try {
-        const { error, data } = await useFetch(
-          `${this.env.public.apiBase}/product/${this.id}`,
-          {
-            method: "PUT",
-            headers: {
-              authorization: this.token,
-            },
-            body: { ...form },
-          }
-        );
+        const response = await productsFunctions.update(this.id, form);
 
-        if (error.value) {
-          throw error;
+        if (response.code === 400) {
+          throw new Error();
         }
 
         navigateTo("/store/products");
@@ -214,9 +191,32 @@ export default {
       this.uploadImage();
     },
   },
+  async mounted() {
+    if (!Number(this.id)) {
+      navigateTo("/store/products");
+    }
+
+    const { content: contentCategories } = await categoriesFunctions.download();
+    this.categoriesList = contentCategories;
+
+    const { content: productThis } = await productsFunctions.downloadOne(this.id);
+
+    this.$refs.title.value = productThis.name;
+    this.$refs.code.value = productThis.code;
+    this.$refs.category.value = productThis.category_id;
+    this.$refs.stock.value = productThis.stock;
+    this.$refs.price.value = productThis.value / 100;
+    this.$refs.description.value = productThis.description;
+
+    this.setImage({
+      url: productThis.image.url,
+      path: productThis.image.path,
+    });
+
+  },
 };
 </script>
-
+  
 <style scoped>
 .main {
   width: clamp(150px, 90%, 1400px);
@@ -225,13 +225,16 @@ export default {
   min-height: 80vh;
   padding: 15px 4%;
   background-color: white;
-    box-shadow: 0 5px 10px rgba(0, 0, 0, 0.233);
-
+  box-shadow: 0 5px 10px rgba(0, 0, 0, 0.233);
 
   display: flex;
   flex-direction: column;
   justify-content: space-between;
   align-items: flex-start;
+}
+
+.center {
+  margin-bottom: 15px;
 }
 
 .pageTitle {
@@ -289,6 +292,11 @@ export default {
   flex-grow: 1;
 }
 
+.flexing label:nth-of-type(2) {
+  flex-grow: auto;
+  max-width: 100px;
+}
+
 .flexing label:last-of-type {
   width: auto;
 }
@@ -315,6 +323,7 @@ p.inputDesc {
 .labelPrice input {
   padding-left: 35px;
 }
+
 .fileLabel {
   position: relative;
   user-select: none;
@@ -383,6 +392,7 @@ img.image {
 .removeImage:hover {
   background: rgba(255, 255, 255, 1);
 }
+
 .removeImage svg {
   widows: 25px;
   height: 25px;
@@ -398,8 +408,8 @@ img.image {
     gap: 15px;
   }
 
-  select{
-    border:  1px solid #ccc;
+  select {
+    border: 1px solid #ccc;
   }
 
   .categories {
@@ -409,6 +419,11 @@ img.image {
   .flexing label:first-of-type {
     flex-grow: 0;
   }
+
+  .flexing label:nth-of-type(2) {
+    max-width: 100%;
+  }
+
   .buttons {
     flex-direction: column;
   }

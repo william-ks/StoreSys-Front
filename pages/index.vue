@@ -8,25 +8,14 @@
         <form v-on:submit="handleSubmit">
           <label for="email">
             <p class="inputDesc">E-mail</p>
-            <input
-              type="email"
-              ref="email"
-              id="email"
-              placeholder="email@exemplo.com"
-              required
-            />
+            <input type="email" ref="email" id="email" placeholder="email@exemplo.com" required />
           </label>
 
           <label class="password" for="password">
             <p class="inputDesc">Senha</p>
             <div class="flex">
-              <input
-                :type="seePass ? 'text' : 'password'"
-                ref="pass"
-                id="password"
-                :placeholder="seePass ? 'senhaExemplo123' : '••••••••••••'"
-                required
-              />
+              <input :type="seePass ? 'text' : 'password'" ref="pass" id="password"
+                :placeholder="seePass ? 'senhaExemplo123' : '••••••••••••'" required />
 
               <span class="eyes" v-on:click="changeView">
                 <Icon v-show="!seePass" name="mdi:eye-off" />
@@ -45,20 +34,26 @@
   </main>
 </template>
 
-<script>
-import { create, read, del } from "~~/composables/local";
+<script setup>
+import userFunctions from "~/composables/contextFunctions/userFunctions";
+import utils from "@/composables/utils"
 
+const { token } = utils();
+
+if (token.value) {
+  const response = await userFunctions.validateLogin();
+  if (response.code === 200) navigateTo("/store/products");
+}
+
+</script>
+
+<script>
 definePageMeta({
   layout: false,
 });
 
 export default {
   name: "Login Page",
-  setup() {
-    const env = useRuntimeConfig();
-
-    return { env };
-  },
   data() {
     return {
       seePass: false,
@@ -72,6 +67,7 @@ export default {
 
     async handleSubmit(e) {
       e.preventDefault();
+
       if (this.loading) {
         return;
       }
@@ -83,73 +79,29 @@ export default {
 
       try {
         this.loading = true;
+        const response = await userFunctions.login(form);
 
-        const { data, error } = await useFetch(
-          `${this.env.public.apiBase}/login`,
-          {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: { ...form },
-          }
-        );
 
-        if (error.value) {
-          throw error;
+        if (response.code === 400) {
+          throw response.error;
         }
-
-        create("user", data._value.user.name);
-        create("token", data._value.token);
 
         this.$refs.email.value = "";
         this.$refs.pass.value = "";
 
-        navigateTo("/store/products");
+        if (response.code === 200) {
+          navigateTo("/store/products");
+        }
+
       } catch (e) {
-        alert(e.value.data.message);
+        if (e.value.data.message) alert(e.value.data.message);
         return;
       } finally {
         this.loading = false;
       }
     },
   },
-  async mounted() {
-    const token = read("token");
-    const user = read("user");
 
-    if (!token || !user) {
-      return;
-    }
-
-    if (this.loading) {
-      return;
-    }
-
-    try {
-      this.loading = true;
-
-      const { error } = await useFetch(`${this.env.public.apiBase}/user`, {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-          authorization: `Bearer ${token}`,
-        },
-      });
-
-      if (error.value) {
-        throw error;
-      }
-
-      navigateTo("/store/products");
-    } catch (e) {
-      del("token");
-      del("user");
-      return;
-    } finally {
-      this.loading = false;
-    }
-  },
 };
 </script>
 
@@ -158,12 +110,14 @@ main.main {
   width: 100%;
   height: 100vh;
 }
-main.main > .center {
+
+main.main>.center {
   height: 90%;
   display: flex;
   justify-content: center;
   align-items: center;
 }
+
 .box {
   width: clamp(200px, 100%, 500px);
   background: white;
