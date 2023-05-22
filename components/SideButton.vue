@@ -1,6 +1,6 @@
 <template>
   <label for="checkbox" class="hamburger">
-    <input type="checkbox" @click="$emit('toggleSide')" id="checkbox" />
+    <input :checked="isChecked" type="checkbox" @click="$emit('toggleSide')" id="checkbox" />
     <span class="line line--top"></span>
     <span class="line line--middle"></span>
     <span class="line line--bottom"></span>
@@ -8,7 +8,11 @@
 </template>
 
 <script>
-export default {};
+export default {
+  props: {
+    isChecked: Boolean
+  }
+};
 </script>
 
 <style scoped>
@@ -37,18 +41,21 @@ export default {};
 .line--top {
   transform: translateY(-7px);
 }
+
 .line--bottom {
   transform: translateY(7px);
 }
 
-#checkbox:checked ~ .line--top {
+#checkbox:checked~.line--top {
   transform: rotate(45deg);
 }
-#checkbox:checked ~ .line--middle {
+
+#checkbox:checked~.line--middle {
   transform: rotate(16deg);
   opacity: 0;
 }
-#checkbox:checked ~ .line--bottom {
+
+#checkbox:checked~.line--bottom {
   transform: rotate(-45deg);
 }
 </style>

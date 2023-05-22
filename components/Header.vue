@@ -10,16 +10,17 @@
 </template>
 
 <script>
-import { read } from "@/composables/local";
+import utils from "~/composables/utils";
 
 export default {
   data() {
     return {
-      user: "user",
+      user: "",
     };
   },
   mounted() {
-    this.user = read("user");
+    const { user } = utils();
+    this.user = user;
   },
 };
 </script>
@@ -29,17 +30,18 @@ header {
   width: 100%;
   padding: 15px 0;
   background-color: white;
-  box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1);
-  border-bottom: 1px solid rgb(49, 127, 230);
   position: relative;
   z-index: 0;
+  border-bottom: 1px solid rgb(49, 127, 230);
+  /* box-shadow: 0 5px 10px rgb(0 0 0 / 5%); */
 }
 
-header > .center {
+header>.center {
   display: flex;
   justify-content: flex-end;
   align-content: center;
 }
+
 .userName {
   display: flex;
   justify-content: center;
@@ -50,6 +52,7 @@ header > .center {
   font-size: 1.1rem;
   text-transform: capitalize;
 }
+
 .userName svg {
   font-size: 1.5rem;
 }
