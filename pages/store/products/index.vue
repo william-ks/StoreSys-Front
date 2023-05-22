@@ -4,10 +4,7 @@
       <div class="opts">
         <button @click="toggleFilters" class="button filterButton">
           <Icon v-show="showFilters" :name="'ic:outline-filter-alt'" />
-          <Icon
-            v-show="!showFilters"
-            :name="'material-symbols:filter-alt-off'"
-          />
+          <Icon v-show="!showFilters" :name="'material-symbols:filter-alt-off'" />
         </button>
         <button class="button bt" @click="navigateTo('/store/products/create')">
           Adicionar um produto
@@ -17,83 +14,72 @@
         <input type="text" class="productInput" placeholder="Nome do produto" />
         <select name="categories" id="categories">
           <option value="">Todos</option>
-          <option value="">Blusas</option>
-          <option value="">Camisetas</option>
+          <option :value="category.id" v-for="category of categoriesList" :key="category.id">
+            {{ category.description }}
+          </option>
         </select>
       </div>
     </div>
     <div class="center">
-      <ul class="products" v-if="productsList">
-        <li v-for="item of productsList" :key="item.id">
-          <CardP
-            :id="item.id"
-            :title="item.name"
-            :image="item.image.url"
-            :stock="item.stock"
-            :price="formatToPrice(item.value / 100)"
-            @deleted="downloadData"
-          />
+      <ul class="products">
+        <li v-for="item of productList" :key="item.id">
+          <CardProductMain :id="item.id" :title="item.name" :image="item.image.url" :stock="item.stock"
+            :price="formatToPrice(item.value / 100)" @yes="delUpdate" />
         </li>
       </ul>
     </div>
   </div>
 </template>
 
-<script>
-import { read } from "@/composables/local";
+<script setup>
+import categoriesFunctions from '~/composables/contextFunctions/categoriesFunctions';
+import productsFunctions from '~/composables/contextFunctions/productsFunctions';
 
-definePageMeta({
-  layout: "custom",
+useSeoMeta({
+  title: 'Produtos',
 });
 
-export default {
-  setup() {
-    const env = useRuntimeConfig();
+const productList = useState('productList', () => []);
+const categoriesList = useState('categoriesList', () => []);
+const showFilters = useState('showFilters', () => false);
 
-    return {
-      env,
-    };
-  },
-  data() {
-    return {
-      showFilters: false,
-      productsList: [],
-    };
-  },
-  methods: {
-    toggleFilters() {
-      this.showFilters = !this.showFilters;
-    },
+const onLoad = async () => {
+  const [
+    { content: contentCategories },
+    { content: contentProducts }
+  ] = await Promise.all([
+    categoriesFunctions.download(),
+    productsFunctions.downloadAll()
+  ]);
 
-    async downloadData() {
-      try {
-        this.productsList = [];
-        const token = read("token");
+  productList.value = contentProducts;
+  categoriesList.value = contentCategories
+}
+await onLoad();
 
-        const { error, data } = await useFetch(
-          `${this.env.public.apiBase}/product`,
-          {
-            method: "GET",
-            headers: {
-              "Content-Type": "application/json",
-              authorization: `Bearer ${token}`,
-            },
-          }
-        );
 
-        if (error.value) {
-          throw error;
-        }
-        this.productsList = [...data.value];
-      } catch (e) {
-        throw e;
-      }
-    },
-  },
-  mounted() {
-    this.downloadData();
-  },
-};
+const toggleFilters = () => {
+  showFilters.value = !showFilters.value;
+}
+
+const delUpdate = async (id) => {
+  try {
+    const response = await productsFunctions.del(id);
+
+    if (response.code === 400) {
+      throw new Error(response.content);
+    }
+
+
+    const { content: contentProducts } = await productsFunctions.downloadAll()
+
+    productList.value = contentProducts;
+
+  } catch (e) {
+    alert("Erro ao excluir produto");
+    return;
+  }
+}
 </script>
 
 <style scoped>
@@ -112,9 +98,10 @@ export default {
 
 .bt {
   background-color: #ffffff;
-  border: 1px solid rgb(30, 30, 30);
-  color: rgb(30, 30, 30);
   font-weight: 300;
+  color: rgb(30, 30, 30);
+  border: 1px solid rgb(30, 30, 30);
+  transition: background-color .25s, color .25s;
 }
 
 .bt:hover {
@@ -146,19 +133,35 @@ export default {
 }
 
 .products {
-  margin-top: 45px;
   width: 100%;
   display: flex;
-  flex-wrap: wrap;
   justify-content: center;
   align-items: center;
-  gap: 20px;
+  flex-direction: column;
+  gap: 30px;
+  margin: 20px 0;
 }
 
 .products li {
-  display: flex;
-  justify-content: center;
-  align-items: center;
+  width: 100%;
+}
+
+@media screen and (min-width: 750px) {
+  .products {
+    flex-direction: row;
+    flex-wrap: wrap;
+  }
+
+  .products li {
+    width: 100%;
+    max-width: 200px;
+  }
+}
+
+@media screen and (max-width: 750px) {
+  .products {
+    gap: 20px;
+  }
 }
 
 @media screen and (max-width: 350px) {
