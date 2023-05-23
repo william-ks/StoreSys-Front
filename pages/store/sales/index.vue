@@ -2,10 +2,10 @@
     <div class="content">
         <div class="subHeader">
             <div class="filter">
-                <select name="payments" id="payments">
-                    <option value="">Todos</option>
-                </select>
-                <button class="button" @click="click">Download</button>
+
+                <button class="button bt" @click="navigateTo('/store/sales/create')">
+                    Nova venda
+                </button>
             </div>
         </div>
         <div class="center">
@@ -23,27 +23,33 @@
 
 <script setup>
 useSeoMeta({
-  title: 'Vendas',
+    title: 'Vendas',
 });
 </script>
 
 <script>
 import salesFunctions from '~/composables/contextFunctions/salesFunctions';
+import categoriesFunctions from '~/composables/contextFunctions/categoriesFunctions';
 
 
 export default {
     data() {
         return {
             showFilters: false,
-            salesList: []
+            salesList: [],
+            categoryList: []
         };
     },
     methods: {
 
     },
     async mounted() {
-        const response = await salesFunctions.downloadAll();
-        this.salesList = response.content;
+
+        const { content: contentSale } = await salesFunctions.downloadAll();
+        this.salesList = contentSale;
+
+        const { content: contentCategory } = await categoriesFunctions.download();
+        this.categoryList = contentCategory;
     }
 }
 </script>
@@ -109,5 +115,18 @@ header {
 
 .itemList:active {
     transform: scale(1);
+}
+
+.bt {
+  background-color: #ffffff;
+  font-weight: 300;
+  color: rgb(30, 30, 30);
+  border: 1px solid rgb(30, 30, 30);
+  transition: background-color .25s, color .25s;
+}
+
+.bt:hover {
+  background-color: rgb(60, 60, 60);
+  color: white;
 }
 </style>
