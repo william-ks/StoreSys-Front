@@ -12,10 +12,10 @@ export const formatData = (value: any) => {
   return date;
 };
 
-export const limitText = (value: string) => {
+export const limitText = (value: string, limit: number) => {
   let text = value;
-  if (text.length >= 12) {
-    text = text.substring(0, 12).trim() + '...';
+  if (text.length >= limit) {
+    text = text.substring(0, limit).trim() + "...";
   }
 
   return text;
