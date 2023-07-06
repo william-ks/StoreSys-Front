@@ -11,7 +11,8 @@
                     <li>
                         <NuxtLink to="/store/sales">
                             <span>
-                                <Icon name="game-icons:take-my-money" />
+                                <Icon
+                                    name="streamline:money-cash-dollar-coin-accounting-billing-payment-cash-coin-currency-money-finance" />
                             </span>
                             <span> Vendas</span>
                         </NuxtLink>

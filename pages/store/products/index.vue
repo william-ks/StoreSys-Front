@@ -101,6 +101,7 @@ const delUpdate = async (id) => {
   font-weight: 300;
   color: rgb(30, 30, 30);
   border: 1px solid rgb(30, 30, 30);
+  text-shadow: none;
   transition: background-color .25s, color .25s;
 }
 
@@ -111,9 +112,13 @@ const delUpdate = async (id) => {
 
 .filterButton {
   font-weight: 400;
-  background-color: #006bc8;
+  background-color: rgb(255 107 42);
   padding: 2px 15px;
   font-size: 1.3rem;
+}
+
+.filterButton:hover {
+  background-color: rgb(255 107 42);
 }
 
 .filter {

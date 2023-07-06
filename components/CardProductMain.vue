@@ -6,7 +6,7 @@
     </div>
 
     <div class="description">
-      <h2 class="name">{{ limitText(title) }}</h2>
+      <h2 class="name">{{ limitText(title, 12) }}</h2>
       <p class="stock">{{ stock }} Unidade</p>
       <p class="price"><span class="full">Preço:</span> <span class="subPrice">{{ price }}</span> </p>
     </div>
@@ -26,13 +26,6 @@
 <script>
 
 export default {
-  setup() {
-    const env = useRuntimeConfig();
-
-    return {
-      env,
-    };
-  },
   data() {
     return {
       confirmModalB: false,
@@ -59,6 +52,15 @@ export default {
       navigateTo(`/store/products/edit/${this.id}`);
     },
   },
+  watch: {
+    confirmModalB(old, newValue) {
+      if (this.confirmModalB) {
+        document.body.style.overflow = 'hidden';
+      } else {
+        document.body.style.overflow = 'auto';
+      }
+    }
+  }
 };
 </script>
 
@@ -164,6 +166,7 @@ export default {
 .opt:hover {
   transform: scale(1.04);
   box-shadow: 0 3px 6px rgba(0, 0, 0, 0.2);
+  background: white;
 }
 
 @media screen and (max-width:750px) {

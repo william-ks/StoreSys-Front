@@ -118,15 +118,16 @@ header {
 }
 
 .bt {
-  background-color: #ffffff;
-  font-weight: 300;
-  color: rgb(30, 30, 30);
-  border: 1px solid rgb(30, 30, 30);
-  transition: background-color .25s, color .25s;
+    background-color: #ffffff;
+    font-weight: 300;
+    color: rgb(30, 30, 30);
+    border: 1px solid rgb(30, 30, 30);
+    text-shadow: none;
+    transition: background-color .25s, color .25s;
 }
 
 .bt:hover {
-  background-color: rgb(60, 60, 60);
-  color: white;
+    background-color: rgb(60, 60, 60);
+    color: white;
 }
 </style>

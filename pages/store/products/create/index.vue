@@ -69,12 +69,12 @@
 </template>
 
 <script>
-import categoriesFunctions from '~/composables/contextFunctions/categoriesFunctions';
-import productsFunctions from '~/composables/contextFunctions/productsFunctions';
+import categoriesFunctions from "~/composables/contextFunctions/categoriesFunctions";
+import productsFunctions from "~/composables/contextFunctions/productsFunctions";
 import state from "@/composables/state";
 
 useSeoMeta({
-  title: 'Criar Produto',
+    title: "Criar Produto",
 });
 
 export default {
@@ -91,8 +91,8 @@ export default {
     },
     data() {
         return {
-            categoriesList: []
-        }
+            categoriesList: [],
+        };
     },
     methods: {
         removeImage() {
@@ -159,7 +159,7 @@ export default {
     async mounted() {
         const { content: contentCategories } = await categoriesFunctions.download();
         this.categoriesList = contentCategories;
-    }
+    },
 };
 </script>
 
@@ -200,14 +200,23 @@ export default {
 .button {
     padding: 5px 35px;
     border-radius: 200px;
-    border: 1px solid rgb(30, 30, 30);
+
     font-weight: 300;
     box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
+    border: 1px solid rgb(13, 180, 88);
+
+}
+
+.button:hover {
+    background-color: rgb(14, 158, 79);
+    border-color: rgb(14, 158, 79);
 }
 
 .button.cancel {
     background: white;
     color: rgb(30, 30, 30);
+    border: 1px solid rgb(30, 30, 30);
+    text-shadow: none;
 
     transition: background 0.15s, color 0.15s;
 }

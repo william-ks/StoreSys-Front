@@ -22,6 +22,20 @@ body {
   color: rgb(35, 35, 35);
 }
 
+*::-webkit-scrollbar {
+  width: 0.5em;
+  height: 8px;
+}
+
+*::-webkit-scrollbar-thumb {
+  background-color: rgb(216, 216, 216);
+  border-radius: 25px;
+}
+
+*::-webkit-scrollbar-thumb:hover {
+  background-color: rgb(201, 201, 201);
+}
+
 .center {
   width: 100%;
   max-width: 1280px;
@@ -114,10 +128,17 @@ button.button {
   cursor: pointer;
 
   padding: 5px 15px;
-  background-color: rgb(40, 40, 45);
+  /* background-color: rgb(255 107 42); */
+  background-color: rgb(13, 180, 88);
   color: rgb(231, 236, 238);
   border-radius: 6px;
-  box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
+  text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.45);
+  transition: background-color 0.15s;
+}
+
+button.button:hover {
+  background-color: rgb(14, 158, 79);
 }
 
 button.button:disabled {

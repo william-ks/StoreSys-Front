@@ -3,7 +3,7 @@
         <h3 class="desc">
             {{ data.title }}
         </h3>
-        <h3 class="desc">{{ formatToPrice((data.total - data.discount_for_client) / 100) }}</h3>
+        <h3 class="desc">{{ formatToPrice(((data.total - data.discount_for_client) / 100)) }}</h3>
         <h3 class="desc">{{ formatData(data.updated_at) }}</h3>
     </div>
 </template>

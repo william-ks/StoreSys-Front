@@ -28,7 +28,7 @@ export default {
 <style scoped>
 header {
   width: 100%;
-  padding: 15px 0;
+  padding: 21.8px 0;
   background-color: white;
   position: relative;
   z-index: 0;
