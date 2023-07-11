@@ -20,3 +20,19 @@ export const limitText = (value: string, limit: number) => {
 
   return text;
 };
+
+export const dateToTimestamp = (date: string) => {
+  const [day, mounth, year] = date.split("-").reverse();
+  const formatedDate = new Date(`${mounth}/${day}/${year}`);
+  return formatedDate.getTime();
+}
+
+export const timestampToDate = (timestamp: number) => {
+  const formatedDate = new Date(timestamp);
+  const day = formatedDate.getDate();
+  const mounth = formatedDate.getMonth() + 1;
+  const year = formatedDate.getFullYear();
+  return `${day.toString().padStart(2, "0")}/${mounth
+    .toString()
+    .padStart(2, "0")}/${year}`;
+}
