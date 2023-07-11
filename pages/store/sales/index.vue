@@ -25,6 +25,10 @@
 useSeoMeta({
     title: 'Vendas',
 });
+
+definePageMeta({
+  middleware: ["auth"],
+});
 </script>
 
 <script>

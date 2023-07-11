@@ -89,13 +89,30 @@
             <p class="inputTitle">Forma de pagamento:</p>
             <div class="saleTypeForm">
               <select @change="changeSaleType" ref="saleType">
-                <option :value="1">Dinheiro</option>
-                <option :value="2">Cartão</option>
-                <option :value="3">Pix</option>
+                <option
+                  :value="payment.id"
+                  v-for="payment of paymentsMethods"
+                  :key="payment.id"
+                >
+                  {{ payment.title }}
+                </option>
               </select>
-              <p class="inputTitle" v-show="viewMachinesOption">Maquininha de Cartão:</p>
+              <p class="inputTitle" v-show="viewMachinesOption">
+                Maquininha de Cartão:
+              </p>
               <select v-show="viewMachinesOption" ref="machine">
-                <option :value="1">Dinheiro</option>
+                <option
+                  :value="machine.id"
+                  v-for="machine of machinesList"
+                  :key="machine.id"
+                >
+                  {{ machine.title }}
+                  {{
+                    saleTypeValue == 3
+                      ? `${(machine.credit / 100).toFixed(2)}%`
+                      : `${(machine.debit / 100).toFixed(2)}%`
+                  }}
+                </option>
               </select>
             </div>
           </div>
@@ -108,6 +125,10 @@
               @change="setFinalValue"
               placeholder="R$ 0,00"
             />
+          </div>
+          <div class="formItem">
+            <p class="inputTitle">Data da venda:</p>
+            <input type="date" ref="date" />
           </div>
         </div>
 
@@ -162,6 +183,16 @@
             </h3>
             <img :src="product.image.url" alt="product view" />
             <h3 class="product_title">{{ limitText(product.name, 50) }}</h3>
+            <h6
+              :class="{
+                stock: true,
+                green: product.stock >= 15,
+                orange: product.stock < 15 && product.stock > 0,
+                red: product.stock === 0,
+              }"
+            >
+              {{ product.stock }} uni
+            </h6>
             <p class="price">{{ formatToPrice(product.value / 100) }}</p>
           </li>
         </ul>
@@ -170,8 +201,16 @@
   </div>
 </template>
 
+<script setup>
+definePageMeta({
+  middleware: ["auth"],
+});
+</script>
+
 <script>
 import salesFunctions from "~/composables/contextFunctions/salesFunctions";
+import machinesFunctions from "~/composables/contextFunctions/machinesFunctions";
+import userFunctions from "~/composables/contextFunctions/userFunctions";
 import categoriesFunctions from "~/composables/contextFunctions/categoriesFunctions";
 import productsFunctions from "~/composables/contextFunctions/productsFunctions";
 
@@ -182,7 +221,10 @@ export default {
       cartList: [],
       categoryList: [],
       productsList: [],
+      machinesList: [],
+      paymentsMethods: [],
       modalView: false,
+      saleTypeValue: 1,
       finalizationView: false,
       totalCart: 0,
       totalValue: 0,
@@ -199,21 +241,44 @@ export default {
     },
 
     async onLoad() {
-      const [{ content: pContent }, { content: cContent }] = await Promise.all([
+      const [
+        { content: pContent },
+        { content: cContent },
+        { content: mContent },
+        { content: payContent },
+      ] = await Promise.all([
         productsFunctions.downloadAll(),
         categoriesFunctions.download(),
+        machinesFunctions.downloadAll(),
+        salesFunctions.downloadPaymentsMethods(),
       ]);
       this.productsList = pContent;
       this.categoryList = cContent;
+      this.machinesList = mContent;
+      this.paymentsMethods = payContent;
+
+      const actualDate = new Date();
+      this.$refs.date.value = actualDate.toISOString().slice(0, 10);
     },
 
     addCart(data) {
-      const existId = this.cartList.findIndex((el) => el.id === data.id);
-      if (existId >= 0) {
-        this.cartList[existId].amount = +this.cartList[existId].amount + 1;
+      const product = this.productsList.find((el) => el.id === data.id);
+      const IdCList = this.cartList.findIndex((el) => el.id === data.id);
+
+      if (product.stock === 0) {
+        return alert("Produto sem estoque disponivel");
+      }
+
+      if (IdCList >= 0) {
+        if (this.cartList[IdCList].amount >= product.stock) {
+          alert("Máximo de itens no estoque já estão selecionados.");
+        } else {
+          this.cartList[IdCList].amount += 1;
+        }
       } else {
         this.cartList.push({ ...data, amount: 1 });
       }
+
       this.updateValueFunction();
     },
 
@@ -244,8 +309,15 @@ export default {
           this.removeOfCart(id);
         }
       } else {
-        this.cartList[itemIndex].amount = +this.cartList[itemIndex].amount + 1;
+        if (this.cartList[itemIndex].amount < this.cartList[itemIndex].stock) {
+          this.cartList[itemIndex].amount =
+            +this.cartList[itemIndex].amount + 1;
+        } else {
+          return alert("Máximo de itens no estoque já estão selecionados.");
+        }
       }
+
+      this.updateValueFunction();
     },
 
     onChangeEditAmount(e, id) {
@@ -292,12 +364,22 @@ export default {
         title += `${item.amount} ${item.name}, `;
       });
 
+      title.trim();
+
+      if (title.trim().at(-1) === ",") {
+        const splitedTitle = title.trim().split("");
+        splitedTitle.pop();
+        title = splitedTitle.join("");
+      }
+
       this.saleTitle = title;
     },
 
     changeSaleType() {
       const type = this.$refs.saleType.value;
-      if (+type !== 2) {
+
+      this.saleTypeValue = this.$refs.saleType.value;
+      if (+type < 3) {
         this.viewMachinesOption = false;
       } else {
         this.viewMachinesOption = true;
@@ -322,19 +404,25 @@ export default {
         products: [],
       };
 
-      if (this.$refs.saleType.value === 2) {
-        form.machine_id = 1;
+      if (this.$refs.saleType.value > 2) {
+        form.machine_id = +this.$refs.saleType.value;
       }
 
       this.cartList.forEach((item) => {
         form.products.push({
-          id: item.value,
+          id: item.id,
           amount: item.amount,
           value: item.value,
         });
       });
 
-      console.log(form);
+      const res = await salesFunctions.create(form);
+      if (res.code === 200) {
+        alert("Venta registrada correctamente");
+        navigateTo("/store/sales");
+      } else {
+        alert("error");
+      }
     },
   },
   async mounted() {
@@ -443,6 +531,22 @@ header {
 .productBox .price {
   position: absolute;
   bottom: 10px;
+}
+.productBox .stock {
+  position: absolute;
+  bottom: 30px;
+  font-weight: 400;
+  text-shadow: 1px 0px 1px rgba(0, 0, 0, 0.2);
+}
+
+.productBox .stock.green {
+  color: #00b33c;
+}
+.productBox .stock.red {
+  color: red;
+}
+.productBox .stock.orange {
+  color: orange;
 }
 
 .productBox h3 {

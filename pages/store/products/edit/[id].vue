@@ -6,7 +6,12 @@
       <div class="flexing">
         <label for="title">
           <p class="inputDesc">Título</p>
-          <input ref="title" placeholder="Nome do produto" type="text" id="title" />
+          <input
+            ref="title"
+            placeholder="Nome do produto"
+            type="text"
+            id="title"
+          />
         </label>
 
         <label for="cod">
@@ -16,9 +21,18 @@
 
         <label for="categories" class="categories">
           <p class="inputDesc">Categoria</p>
-          <select ref="category" name="categories" class="categories" id="categories">
+          <select
+            ref="category"
+            name="categories"
+            class="categories"
+            id="categories"
+          >
             <option value="">Todos</option>
-            <option :value="category.id" v-for="category of categoriesList" :key="category.id">
+            <option
+              :value="category.id"
+              v-for="category of categoriesList"
+              :key="category.id"
+            >
               {{ category.description }}
             </option>
           </select>
@@ -39,14 +53,21 @@
       </label>
 
       <label for="description">
-        <textarea ref="description" id="description" placeholder="Descrição..."></textarea>
+        <textarea
+          ref="description"
+          id="description"
+          placeholder="Descrição..."
+        ></textarea>
       </label>
-
 
       <div class="inputFileDiv">
         <p class="inputDesc">Adicionar Foto:</p>
 
-        <label class="fileLabel" @change="(e) => setFile(e.target.files[0])" for="inputFile">
+        <label
+          class="fileLabel"
+          @change="(e) => setFile(e.target.files[0])"
+          for="inputFile"
+        >
           <div :class="{ iconGroup: true, point: !image.url }">
             <div class="imageDiv" v-if="image.url">
               <img :src="image.url" alt="" class="image" />
@@ -58,7 +79,12 @@
             <Icon class="imageIcon" v-else name="lucide:image-plus" />
           </div>
 
-          <input type="file" id="inputFile" class="inputFile" :disabled="image.url ? true : false" />
+          <input
+            type="file"
+            id="inputFile"
+            class="inputFile"
+            :disabled="image.url ? true : false"
+          />
         </label>
       </div>
     </form>
@@ -71,11 +97,15 @@
   
 <script>
 import state from "@/composables/state";
-import categoriesFunctions from '~/composables/contextFunctions/categoriesFunctions';
-import productsFunctions from '~/composables/contextFunctions/productsFunctions';
+import categoriesFunctions from "~/composables/contextFunctions/categoriesFunctions";
+import productsFunctions from "~/composables/contextFunctions/productsFunctions";
 
 useSeoMeta({
-  title: 'Editar Produto',
+  title: "Editar Produto",
+});
+
+definePageMeta({
+  middleware: ["auth"],
 });
 
 export default {
@@ -96,7 +126,7 @@ export default {
   data() {
     return {
       id: this.$route.params.id,
-      categoriesList: []
+      categoriesList: [],
     };
   },
 
@@ -159,7 +189,7 @@ export default {
 
       const form = {
         name: this.$refs.title.value,
-        value: Number(this.$refs.price.value) * 100,
+        value: +(Number(this.$refs.price.value) * 100).toFixed(0),
         stock: Number(this.$refs.stock.value),
         category_id: Number(this.$refs.category.value),
         code: Number(this.$refs.code.value),
@@ -199,7 +229,9 @@ export default {
     const { content: contentCategories } = await categoriesFunctions.download();
     this.categoriesList = contentCategories;
 
-    const { content: productThis } = await productsFunctions.downloadOne(this.id);
+    const { content: productThis } = await productsFunctions.downloadOne(
+      this.id
+    );
 
     this.$refs.title.value = productThis.name;
     this.$refs.code.value = productThis.code;
@@ -212,7 +244,6 @@ export default {
       url: productThis.image.url,
       path: productThis.image.path,
     });
-
   },
 };
 </script>
@@ -258,7 +289,6 @@ export default {
   font-weight: 300;
   box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
   border: 1px solid rgb(13, 180, 88);
-
 }
 
 .button:hover {

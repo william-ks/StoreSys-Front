@@ -4,7 +4,10 @@
       <div class="opts">
         <button @click="toggleFilters" class="button filterButton">
           <Icon v-show="showFilters" :name="'ic:outline-filter-alt'" />
-          <Icon v-show="!showFilters" :name="'material-symbols:filter-alt-off'" />
+          <Icon
+            v-show="!showFilters"
+            :name="'material-symbols:filter-alt-off'"
+          />
         </button>
         <button class="button bt" @click="navigateTo('/store/products/create')">
           Adicionar um produto
@@ -14,7 +17,11 @@
         <input type="text" class="productInput" placeholder="Nome do produto" />
         <select name="categories" id="categories">
           <option value="">Todos</option>
-          <option :value="category.id" v-for="category of categoriesList" :key="category.id">
+          <option
+            :value="category.id"
+            v-for="category of categoriesList"
+            :key="category.id"
+          >
             {{ category.description }}
           </option>
         </select>
@@ -23,8 +30,14 @@
     <div class="center">
       <ul class="products">
         <li v-for="item of productList" :key="item.id">
-          <CardProductMain :id="item.id" :title="item.name" :image="item.image.url" :stock="item.stock"
-            :price="formatToPrice(item.value / 100)" @yes="delUpdate" />
+          <CardProductMain
+            :id="item.id"
+            :title="item.name"
+            :image="item.image.url"
+            :stock="item.stock"
+            :price="formatToPrice(item.value / 100)"
+            @yes="delUpdate"
+          />
         </li>
       </ul>
     </div>
@@ -32,35 +45,37 @@
 </template>
 
 <script setup>
-import categoriesFunctions from '~/composables/contextFunctions/categoriesFunctions';
-import productsFunctions from '~/composables/contextFunctions/productsFunctions';
+import categoriesFunctions from "~/composables/contextFunctions/categoriesFunctions";
+import productsFunctions from "~/composables/contextFunctions/productsFunctions";
+import auth from "~/middleware/auth";
 
 useSeoMeta({
-  title: 'Produtos',
+  title: "Produtos",
 });
 
-const productList = useState('productList', () => []);
-const categoriesList = useState('categoriesList', () => []);
-const showFilters = useState('showFilters', () => false);
+definePageMeta({
+  middleware: ["auth"],
+});
+
+const productList = useState("productList", () => []);
+const categoriesList = useState("categoriesList", () => []);
+const showFilters = useState("showFilters", () => false);
 
 const onLoad = async () => {
-  const [
-    { content: contentCategories },
-    { content: contentProducts }
-  ] = await Promise.all([
-    categoriesFunctions.download(),
-    productsFunctions.downloadAll()
-  ]);
+  const [{ content: contentCategories }, { content: contentProducts }] =
+    await Promise.all([
+      categoriesFunctions.download(),
+      productsFunctions.downloadAll(),
+    ]);
 
   productList.value = contentProducts;
-  categoriesList.value = contentCategories
-}
+  categoriesList.value = contentCategories;
+};
 await onLoad();
-
 
 const toggleFilters = () => {
   showFilters.value = !showFilters.value;
-}
+};
 
 const delUpdate = async (id) => {
   try {
@@ -70,16 +85,14 @@ const delUpdate = async (id) => {
       throw new Error(response.content);
     }
 
-
-    const { content: contentProducts } = await productsFunctions.downloadAll()
+    const { content: contentProducts } = await productsFunctions.downloadAll();
 
     productList.value = contentProducts;
-
   } catch (e) {
     alert("Erro ao excluir produto");
     return;
   }
-}
+};
 </script>
 
 <style scoped>
@@ -102,7 +115,7 @@ const delUpdate = async (id) => {
   color: rgb(30, 30, 30);
   border: 1px solid rgb(30, 30, 30);
   text-shadow: none;
-  transition: background-color .25s, color .25s;
+  transition: background-color 0.25s, color 0.25s;
 }
 
 .bt:hover {
