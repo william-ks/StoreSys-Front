@@ -7,7 +7,7 @@
 
     <div class="description">
       <h2 class="name">{{ limitText(title, 12) }}</h2>
-      <p class="stock">{{ stock }} Unidade</p>
+      <p class="stock">{{ stock }} Unidades</p>
       <p class="price"><span class="full">Preço:</span> <span class="subPrice">{{ price }}</span> </p>
     </div>
 
