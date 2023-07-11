@@ -61,7 +61,7 @@ main {
   height: 100%;
 }
 
-input:is([type="email"], [type="password"], [type="text"]),
+input:is([type="email"], [type="password"], [type="text"], [type="date"]),
 textarea {
   font-size: 1rem;
   font-weight: 200;
@@ -74,7 +74,7 @@ textarea {
   box-shadow: 0 5px 10px rgba(0, 0, 0, 0.05);
 }
 
-input:is([type="email"]:hover, [type="password"]:hover, [type="text"]):hover,
+input:is([type="email"], [type="password"], [type="text"], [type="date"]):hover,
 textarea:hover {
   border-color: #b1b1b1;
   box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1);
