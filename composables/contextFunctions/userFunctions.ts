@@ -46,10 +46,37 @@ class userFunctions {
 
       return { code: 200, content: data.value };
     } catch (e) {
-      token.value = null;
-      user.value = null;
-      return { code: 400 };
+      this.logOut();
     }
+  }
+
+  public async getUserInfoFromToken() {
+    const { token, api, user } = utils();
+    try {
+      const { error, data } = await useFetch(`${api}/user`, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          authorization: `Bearer ${token.value}`,
+        },
+      });
+
+      if (error.value) {
+        throw error;
+      }
+
+      return { code: 200, content: data.value };
+    } catch (e) {
+      return false
+    }
+  }
+
+  public logOut() {
+    const { token, user } = utils();
+
+    token.value = null;
+    user.value = null;
+    navigateTo('/');
   }
 }
 

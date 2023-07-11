@@ -1,4 +1,5 @@
 import utils from "../utils";
+import userFunctions from "./userFunctions";
 
 class productsFunctions {
   public async downloadAll() {
@@ -13,8 +14,13 @@ class productsFunctions {
       });
 
       if (!res.data.value) {
-        console.log("refresh");
         await res.refresh();
+      }
+
+      if (res.error) {
+        if (res.error.value?.data.code === 609) {
+          userFunctions.logOut();
+        }
       }
 
       return {
@@ -40,6 +46,12 @@ class productsFunctions {
         },
       });
 
+      if (res.error) {
+        if (res.error.value?.data.code === 609) {
+          userFunctions.logOut();
+        }
+      }
+
       return {
         code: 200,
         content: res.data.value,
@@ -62,6 +74,12 @@ class productsFunctions {
         },
         body: form,
       });
+
+      if (error) {
+        if (error.value?.data.code === 609) {
+          userFunctions.logOut();
+        }
+      }
 
       return {
         code: 200,
@@ -87,6 +105,9 @@ class productsFunctions {
       });
 
       if (error.value) {
+        if (error.value?.data.code === 609) {
+          return userFunctions.logOut();
+        }
         throw error;
       }
 
@@ -109,6 +130,9 @@ class productsFunctions {
       });
 
       if (error.value) {
+        if (error.value?.data.code === 609) {
+          return userFunctions.logOut();
+        }
         throw error;
       }
 
@@ -134,6 +158,9 @@ class productsFunctions {
       });
 
       if (error.value) {
+        if (error.value?.data.code === 609) {
+          return userFunctions.logOut();
+        }
         throw error;
       }
 
