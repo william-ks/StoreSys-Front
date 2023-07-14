@@ -48,6 +48,11 @@ if (token.value) {
 </script>
 
 <script>
+useSeoMeta({
+  title: "Login",
+});
+
+
 definePageMeta({
   layout: false,
 });
