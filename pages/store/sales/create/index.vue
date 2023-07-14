@@ -201,18 +201,21 @@
   </div>
 </template>
 
-<script setup>
-definePageMeta({
-  middleware: ["auth"],
-});
-</script>
-
 <script>
 import salesFunctions from "~/composables/contextFunctions/salesFunctions";
 import machinesFunctions from "~/composables/contextFunctions/machinesFunctions";
 import userFunctions from "~/composables/contextFunctions/userFunctions";
 import categoriesFunctions from "~/composables/contextFunctions/categoriesFunctions";
 import productsFunctions from "~/composables/contextFunctions/productsFunctions";
+
+useSeoMeta({
+  title: "Nova Venda",
+});
+
+
+definePageMeta({
+  middleware: ["auth"],
+});
 
 export default {
   setup() {},
@@ -401,6 +404,7 @@ export default {
         title: this.saleTitle,
         sale_type_id: +this.$refs.saleType.value,
         discount_for_client: +this.discountValue * 100,
+        sold_at: new Date(this.$refs.date.value),
         products: [],
       };
 
@@ -419,6 +423,7 @@ export default {
       const res = await salesFunctions.create(form);
       if (res.code === 200) {
         alert("Venta registrada correctamente");
+        this.toggleModalView();
         navigateTo("/store/sales");
       } else {
         alert("error");
