@@ -30,18 +30,20 @@
     <div class="center">
       <div class="productsDiv">
         <h2 class="productsTitle">Produtos</h2>
-        <ul class="products">
-          <li v-for="item of productList" :key="item.id">
-            <CardProductMain
-              :id="item.id"
-              :title="item.name"
-              :image="item.image.url"
-              :stock="item.stock"
-              :price="formatToPrice(item.value / 100)"
-              @yes="delUpdate"
-            />
-          </li>
-        </ul>
+        <div class="productsBox">
+          <ul class="products">
+            <li v-for="item of productList" :key="item.id">
+              <CardProductMain
+                :id="item.id"
+                :title="item.name"
+                :image="item.image.url"
+                :stock="item.stock"
+                :price="formatToPrice(item.value / 100)"
+                @yes="delUpdate"
+              />
+            </li>
+          </ul>
+        </div>
       </div>
     </div>
   </div>
@@ -50,10 +52,10 @@
 <script setup>
 import categoriesFunctions from "~/composables/contextFunctions/categoriesFunctions";
 import productsFunctions from "~/composables/contextFunctions/productsFunctions";
-import auth from "~/middleware/auth";
+import CardProductMain from "./_components/CardProductMain.vue";
 
 useSeoMeta({
-  title: "Produtos",
+  title: "Estoque",
 });
 
 definePageMeta({
@@ -160,7 +162,11 @@ const delUpdate = async (id) => {
   border: 1px solid #d3d3d3;
   border-radius: 8px;
   min-height: 75vh;
-  /* padding: 15px 4%; */
+
+}
+
+.productsBox{
+  padding: 0 4%;
 }
 
 .productsTitle {

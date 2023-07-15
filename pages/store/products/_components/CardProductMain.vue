@@ -8,7 +8,10 @@
     <div class="description">
       <h2 class="name">{{ limitText(title, 12) }}</h2>
       <p class="stock">{{ stock }} Unidades</p>
-      <p class="price"><span class="full">Preço:</span> <span class="subPrice">{{ price }}</span> </p>
+      <p class="price">
+        <span class="full">Preço:</span>
+        <span class="subPrice">{{ price }}</span>
+      </p>
     </div>
 
     <div class="options">
@@ -23,8 +26,11 @@
   </div>
 </template>
 
-<script>
+<script setup>
+import ConfirmModal from "@/components/Modal/ConfirmModal.vue";
+</script>
 
+<script>
 export default {
   data() {
     return {
@@ -45,8 +51,7 @@ export default {
     },
     async del() {
       this.change();
-      this.$emit('yes', this.id)
-
+      this.$emit("yes", this.id);
     },
     toEdit() {
       navigateTo(`/store/products/edit/${this.id}`);
@@ -55,12 +60,12 @@ export default {
   watch: {
     confirmModalB(old, newValue) {
       if (this.confirmModalB) {
-        document.body.style.overflow = 'hidden';
+        document.body.style.overflow = "hidden";
       } else {
-        document.body.style.overflow = 'auto';
+        document.body.style.overflow = "auto";
       }
-    }
-  }
+    },
+  },
 };
 </script>
 
@@ -81,7 +86,7 @@ export default {
   background-color: white;
   box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
   border: 1px solid #ebebeb;
-  transition: box-shadow .1s;
+  transition: box-shadow 0.1s;
 }
 
 .cardProduct:hover {
@@ -161,7 +166,7 @@ export default {
   border-radius: 50px;
   border: 1px solid #ccc;
   box-shadow: 0 3px 6px rgba(0, 0, 0, 0.1);
-  transition: transform .15s, box-shadow .15s;
+  transition: transform 0.15s, box-shadow 0.15s;
 }
 
 .opt:hover {
@@ -170,7 +175,7 @@ export default {
   background: white;
 }
 
-@media screen and (max-width:750px) {
+@media screen and (max-width: 750px) {
   .cardProduct {
     width: 100%;
     height: auto;
@@ -223,9 +228,9 @@ export default {
   }
 }
 
-@media screen and (max-width:370px) {
+@media screen and (max-width: 370px) {
   .full {
-    display: none
+    display: none;
   }
 }
 </style>

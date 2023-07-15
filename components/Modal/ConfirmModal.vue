@@ -3,8 +3,8 @@ export default {};
 </script>
 
 <template>
-  <div class="modal">
-    <div class="modalBox">
+  <div class="modal" @click="$emit('close')">
+    <div class="modalBox" @click="(e) => e.stopPropagation()">
       <div class="close">
         <Icon @click="$emit('close')" name="mdi:window-close" />
       </div>
@@ -20,6 +20,7 @@ export default {};
 
 <style scoped>
 .modal {
+  cursor: default;
   width: 100%;
   height: 100vh;
   position: fixed;
@@ -33,6 +34,7 @@ export default {};
   justify-content: center;
   align-items: center;
   padding: 3%;
+  user-select: none;
 }
 
 .modalBox {
@@ -77,6 +79,10 @@ button.button {
   padding: 5px 35px;
   box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
   border: 1px solid rgb(30, 30, 30);
+}
+
+button.yes {
+  border-color: transparent;
 }
 
 button.button:hover {

@@ -9,7 +9,7 @@
       <div class="listGroup">
         <ul class="list">
           <li class="itemList" v-for="item of salesList" :key="item.id">
-            <SalesListMain :data="item" />
+            <SalesListMain :data="item"></SalesListMain>
           </li>
         </ul>
       </div>
@@ -17,10 +17,13 @@
   </div>
 </template>
 
-<script>
+<script setup>
+import SalesListMain from "./_components/SalesListMain.vue";
 import salesFunctions from "~/composables/contextFunctions/salesFunctions";
 import categoriesFunctions from "~/composables/contextFunctions/categoriesFunctions";
+</script>
 
+<script>
 useSeoMeta({
   title: "Vendas",
 });
