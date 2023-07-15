@@ -79,7 +79,8 @@ export default {
   border-radius: 16px;
 
   background-color: white;
-  box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
+  border: 1px solid #ebebeb;
   transition: box-shadow .1s;
 }
 

@@ -28,18 +28,21 @@
       </div>
     </div>
     <div class="center">
-      <ul class="products">
-        <li v-for="item of productList" :key="item.id">
-          <CardProductMain
-            :id="item.id"
-            :title="item.name"
-            :image="item.image.url"
-            :stock="item.stock"
-            :price="formatToPrice(item.value / 100)"
-            @yes="delUpdate"
-          />
-        </li>
-      </ul>
+      <div class="productsDiv">
+        <h2 class="productsTitle">Produtos</h2>
+        <ul class="products">
+          <li v-for="item of productList" :key="item.id">
+            <CardProductMain
+              :id="item.id"
+              :title="item.name"
+              :image="item.image.url"
+              :stock="item.stock"
+              :price="formatToPrice(item.value / 100)"
+              @yes="delUpdate"
+            />
+          </li>
+        </ul>
+      </div>
     </div>
   </div>
 </template>
@@ -148,6 +151,29 @@ const delUpdate = async (id) => {
 
 .filter.show {
   visibility: visible;
+}
+
+.productsDiv {
+  width: 100%;
+  background: white;
+  box-shadow: 0 5px 10px rgba(0, 0, 0, 0.205);
+  border: 1px solid #d3d3d3;
+  border-radius: 8px;
+  min-height: 75vh;
+  /* padding: 15px 4%; */
+}
+
+.productsTitle {
+  width: 100%;
+  margin-bottom: 15px;
+  background: rgb(50, 50, 50);
+  border-radius: 8px 8px 0 0;
+  padding: 5px 4%;
+  text-shadow: 0 0 5px;
+  color: white;
+
+  font-weight: 400;
+  font-size: 1.7rem;
 }
 
 .products {
