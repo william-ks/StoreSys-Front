@@ -1,19 +1,7 @@
 <template>
   <div class="content">
     <div class="subHeader">
-      <div class="opts">
-        <button @click="toggleFilters" class="button filterButton">
-          <Icon v-show="showFilters" :name="'ic:outline-filter-alt'" />
-          <Icon
-            v-show="!showFilters"
-            :name="'material-symbols:filter-alt-off'"
-          />
-        </button>
-        <button class="button bt" @click="navigateTo('/store/products/create')">
-          Adicionar um produto
-        </button>
-      </div>
-      <div :class="{ filter: true, show: showFilters }">
+      <div class="filter">
         <input type="text" class="productInput" placeholder="Nome do produto" />
         <select name="categories" id="categories">
           <option value="">Todos</option>
@@ -29,7 +17,15 @@
     </div>
     <div class="center">
       <div class="productsDiv">
-        <h2 class="productsTitle">Produtos</h2>
+        <h2 class="productsTitle">
+          <span> Produtos </span>
+          <button
+            class="button bt"
+            @click="navigateTo('/store/products/create')"
+          >
+            <Icon name="material-symbols:add" />
+          </button>
+        </h2>
         <div class="productsBox">
           <ul class="products">
             <li v-for="item of productList" :key="item.id">
@@ -64,7 +60,6 @@ definePageMeta({
 
 const productList = useState("productList", () => []);
 const categoriesList = useState("categoriesList", () => []);
-const showFilters = useState("showFilters", () => false);
 
 const onLoad = async () => {
   const [{ content: contentCategories }, { content: contentProducts }] =
@@ -78,9 +73,6 @@ const onLoad = async () => {
 };
 await onLoad();
 
-const toggleFilters = () => {
-  showFilters.value = !showFilters.value;
-};
 
 const delUpdate = async (id) => {
   try {
@@ -115,17 +107,21 @@ const delUpdate = async (id) => {
 }
 
 .bt {
-  background-color: #ffffff;
-  font-weight: 300;
-  color: rgb(30, 30, 30);
-  border: 1px solid rgb(30, 30, 30);
-  text-shadow: none;
-  transition: background-color 0.25s, color 0.25s;
+  cursor: pointer;
+  font-size: 2.3rem;
+  padding: 0;
+
+  display: flex;
+  justify-content: center;
+  align-content: center;
+
+  background-color: rgb(13, 180, 88);
+  border-radius: 8px;
 }
 
-.bt:hover {
-  background-color: rgb(60, 60, 60);
-  color: white;
+.bt svg {
+  padding: 5px;
+  filter: drop-shadow(1px 1px 1px rgba(0, 0, 0, 0.3));
 }
 
 .filterButton {
@@ -140,7 +136,6 @@ const delUpdate = async (id) => {
 }
 
 .filter {
-  visibility: hidden;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -151,10 +146,6 @@ const delUpdate = async (id) => {
   max-width: 60%;
 }
 
-.filter.show {
-  visibility: visible;
-}
-
 .productsDiv {
   width: 100%;
   background: white;
@@ -162,16 +153,19 @@ const delUpdate = async (id) => {
   border: 1px solid #d3d3d3;
   border-radius: 8px;
   min-height: 75vh;
-
 }
 
-.productsBox{
+.productsBox {
   padding: 0 4%;
 }
 
 .productsTitle {
   width: 100%;
   margin-bottom: 15px;
+
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
   background: rgb(50, 50, 50);
   border-radius: 8px 8px 0 0;
   padding: 5px 4%;
