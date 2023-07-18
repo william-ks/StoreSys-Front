@@ -6,7 +6,7 @@
   
 <script>
 useSeoMeta({
-  title: "Produtos",
+  title: "Categorias",
 });
 
 definePageMeta({
