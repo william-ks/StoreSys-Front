@@ -8,14 +8,25 @@
         <form v-on:submit="handleSubmit">
           <label for="email">
             <p class="inputDesc">E-mail</p>
-            <input type="email" ref="email" id="email" placeholder="email@exemplo.com" required />
+            <input
+              type="email"
+              ref="email"
+              id="email"
+              placeholder="email@exemplo.com"
+              required
+            />
           </label>
 
           <label class="password" for="password">
             <p class="inputDesc">Senha</p>
             <div class="flex">
-              <input :type="seePass ? 'text' : 'password'" ref="pass" id="password"
-                :placeholder="seePass ? 'senhaExemplo123' : '••••••••••••'" required />
+              <input
+                :type="seePass ? 'text' : 'password'"
+                ref="pass"
+                id="password"
+                :placeholder="seePass ? 'senhaExemplo123' : '••••••••••••'"
+                required
+              />
 
               <span class="eyes" v-on:click="changeView">
                 <Icon v-show="!seePass" name="mdi:eye-off" />
@@ -36,7 +47,7 @@
 
 <script setup>
 import userFunctions from "~/composables/contextFunctions/userFunctions";
-import utils from "@/composables/utils"
+import utils from "@/composables/utils";
 
 const { token } = utils();
 
@@ -45,14 +56,12 @@ if (token.value) {
   if (response.code === 200) navigateTo("/store/products");
 }
 
-</script>
-
-<script>
 useSeoMeta({
   title: "Login",
 });
+</script>
 
-
+<script>
 definePageMeta({
   layout: false,
 });
@@ -86,7 +95,6 @@ export default {
         this.loading = true;
         const response = await userFunctions.login(form);
 
-
         if (response.code === 400) {
           throw response.error;
         }
@@ -97,7 +105,6 @@ export default {
         if (response.code === 200) {
           navigateTo("/store/products");
         }
-
       } catch (e) {
         if (e.value.data.message) alert(e.value.data.message);
         return;
@@ -106,7 +113,6 @@ export default {
       }
     },
   },
-
 };
 </script>
 
@@ -116,7 +122,7 @@ main.main {
   height: 100vh;
 }
 
-main.main>.center {
+main.main > .center {
   height: 90%;
   display: flex;
   justify-content: center;
