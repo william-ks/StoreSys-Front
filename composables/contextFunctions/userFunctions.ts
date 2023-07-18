@@ -7,7 +7,7 @@ interface loginFormI {
 
 class userFunctions {
   public async login(form: loginFormI) {
-    const { token, api, user } = utils();
+    const { token, api, user, office } = utils();
     try {
       const { data }: any = await useFetch(`${api}/login`, {
         method: "POST",
@@ -19,6 +19,21 @@ class userFunctions {
 
       token.value = data.value.token;
       user.value = data.value.user.name;
+
+      switch (data.value.user.hierarchy.name) {
+        case 'Developer':
+          office.value = '1';
+          break;
+        case 'Master':
+          office.value = '2';
+          break;
+        case 'Admin':
+          office.value = '3';
+          break;
+        case 'Employee':
+          office.value = '4';
+          break;
+      }
 
       return { code: 200 };
     } catch (e: any) {
