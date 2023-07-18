@@ -8,46 +8,12 @@
       </header>
       <nav>
         <ul @click="changeOnList">
-          <li>
-            <NuxtLink to="/store/sales">
+          <li v-for="opt of routes" :key="opt.title">
+            <NuxtLink :to="opt.route">
               <span>
-                <Icon
-                  name="streamline:money-cash-dollar-coin-accounting-billing-payment-cash-coin-currency-money-finance"
-                />
+                <Icon :name="opt.icon" />
               </span>
-              <span> Vendas</span>
-            </NuxtLink>
-          </li>
-          <li>
-            <NuxtLink to="/store/products">
-              <span>
-                <Icon name="fluent-mdl2:product" />
-              </span>
-              <span>Estoque</span>
-            </NuxtLink>
-          </li>
-          <li>
-            <NuxtLink to="/">
-              <span>
-                <Icon name="mi:users" />
-              </span>
-              <span>Usuários</span>
-            </NuxtLink>
-          </li>
-          <li>
-            <NuxtLink to="/">
-              <span>
-                <Icon name="ph:chart-line" />
-              </span>
-              <span>Relatórios</span>
-            </NuxtLink>
-          </li>
-          <li>
-            <NuxtLink to="/store/categories">
-              <span>
-                <Icon name="carbon:collapse-categories" />
-              </span>
-              <span>Categorias</span>
+              <span> {{ opt.title }}</span>
             </NuxtLink>
           </li>
         </ul>
@@ -57,6 +23,7 @@
 </template>
 
 <script>
+import utils from "~/composables/utils";
 export default {
   props: {
     sideBar: Boolean,
@@ -64,6 +31,45 @@ export default {
   data() {
     return {
       isChecked: false,
+      officeValue: 0,
+      routes: [
+        {
+          title: "Vendas",
+          icon: "streamline:money-cash-dollar-coin-accounting-billing-payment-cash-coin-currency-money-finance",
+          route: "/store/sales",
+          hierarchy: 4,
+        },
+        {
+          title: "Estoque",
+          icon: "fluent-mdl2:product",
+          route: "/store/products",
+          hierarchy: 4,
+        },
+        {
+          title: "Maquininhas",
+          icon: "majesticons:creditcard-hand-line",
+          route: "/store/machines",
+          hierarchy: 4,
+        },
+        {
+          title: "Categorias",
+          icon: "carbon:collapse-categories",
+          route: "/store/categories",
+          hierarchy: 4,
+        },
+        {
+          title: "Usuários",
+          icon: "clarity:employee-group-line",
+          route: "/",
+          hierarchy: 2,
+        },
+        {
+          title: "Relatórios",
+          icon: "ph:chart-line",
+          route: "/",
+          hierarchy: 2,
+        },
+      ],
     };
   },
   methods: {
@@ -75,6 +81,10 @@ export default {
         this.$emit("toggleSide");
       }
     },
+  },
+  mounted() {
+    const { office } = utils();
+    this.officeValue = +office.value;
   },
 };
 </script>
