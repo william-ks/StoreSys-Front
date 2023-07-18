@@ -3,19 +3,19 @@
     <div class="center"></div>
   </div>
 </template>
-  
-<script>
+
+<script setup>
 useSeoMeta({
   title: "Categorias",
 });
-
+</script>
+  
+<script>
 definePageMeta({
   middleware: ["auth"],
 });
 
-export default {
-    
-}
+export default {};
 </script>
   
 <style scoped>
