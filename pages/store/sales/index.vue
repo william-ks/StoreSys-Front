@@ -21,13 +21,12 @@
 import SalesListMain from "./_components/SalesListMain.vue";
 import salesFunctions from "~/composables/contextFunctions/salesFunctions";
 import categoriesFunctions from "~/composables/contextFunctions/categoriesFunctions";
-</script>
-
-<script>
 useSeoMeta({
   title: "Vendas",
 });
+</script>
 
+<script>
 definePageMeta({
   middleware: ["auth"],
 });
