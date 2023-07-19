@@ -124,17 +124,6 @@ const delUpdate = async (id) => {
   filter: drop-shadow(1px 1px 1px rgba(0, 0, 0, 0.3));
 }
 
-.filterButton {
-  font-weight: 400;
-  background-color: rgb(255 107 42);
-  padding: 2px 15px;
-  font-size: 1.3rem;
-}
-
-.filterButton:hover {
-  background-color: rgb(255 107 42);
-}
-
 .filter {
   display: flex;
   justify-content: center;
@@ -150,7 +139,6 @@ const delUpdate = async (id) => {
   width: 100%;
   background: white;
   box-shadow: 0 5px 10px rgba(0, 0, 0, 0.205);
-  border: 1px solid #d3d3d3;
   border-radius: 8px;
   min-height: 75vh;
 }
@@ -167,7 +155,8 @@ const delUpdate = async (id) => {
   justify-content: space-between;
   align-items: center;
   background: rgb(50, 50, 50);
-  border-radius: 8px 8px 0 0;
+  border: 1px solid rgb(50, 50, 50);
+  border-radius: 6px 6px 0 0;
   padding: 5px 4%;
   text-shadow: 0 0 5px;
   color: white;
