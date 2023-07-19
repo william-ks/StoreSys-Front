@@ -1,9 +1,15 @@
 export default function utils() {
   const env = useRuntimeConfig();
   const api = env.public.apiBase;
-  const token = useCookie("token");
-  const user = useCookie("user");
-  const office = useCookie("office");
+  const token = useCookie("token", {
+    maxAge: 60 * 60 * 8
+  });
+  const user = useCookie("user", {
+    maxAge: 60 * 60 * 8
+  });
+  const office = useCookie("office", {
+    maxAge: 60 * 60 * 8
+  });
 
   return {
     token,

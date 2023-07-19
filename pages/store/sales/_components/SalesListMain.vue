@@ -1,7 +1,7 @@
 <template>
   <div class="item">
     <h3 class="desc">
-      {{ data.title }}
+      {{ limitText(data.title, 15) }}
     </h3>
     <h3 class="desc">
       {{ formatToPrice((data.total - data.discount_for_client) / 100) }}
