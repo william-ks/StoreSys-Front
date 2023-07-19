@@ -53,7 +53,7 @@ export default {
         },
         {
           title: "Categorias",
-          icon: "carbon:collapse-categories",
+          icon: "carbon:categories",
           route: "/store/categories",
           hierarchy: 4,
         },
@@ -168,7 +168,7 @@ ul li {
 }
 
 ul li a {
-  padding: 35px 5px;
+  padding: 30px 5px;
   display: flex;
   width: 100%;
   justify-content: flex-start;
