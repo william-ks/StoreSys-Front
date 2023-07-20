@@ -14,7 +14,7 @@ export default {};
 </template>
 
 
-<style scoped>
+<style>
 .modal {
   cursor: default;
   width: 100%;
@@ -57,44 +57,5 @@ export default {};
 h1 {
   font-weight: 300;
   text-align: center;
-}
-
-.buttons {
-  margin-top: 25px;
-  width: 100%;
-
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  gap: 20px;
-}
-
-button.button {
-  border-radius: 100px;
-  font-weight: 200;
-  padding: 5px 35px;
-  box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
-  border: 1px solid rgb(30, 30, 30);
-}
-
-button.yes {
-  border-color: transparent;
-}
-
-button.button:hover {
-  box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1);
-  transform: scale(1.02);
-}
-
-button.no {
-  background: white;
-
-  color: rgb(30, 30, 30);
-  transition: background 0.15s, color 0.15s;
-}
-
-button.no:hover {
-  color: white;
-  background: rgb(30, 30, 30);
 }
 </style>
