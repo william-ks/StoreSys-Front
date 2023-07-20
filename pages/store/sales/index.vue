@@ -8,7 +8,11 @@
     <div class="center">
       <div class="listGroup">
         <ul class="list">
-          <li class="itemList" v-for="item of salesList" :key="item.id">
+          <li
+            class="itemList"
+            v-for="item of saleStore.salesList"
+            :key="item.id"
+          >
             <SalesListMain :data="item"></SalesListMain>
           </li>
         </ul>
@@ -19,8 +23,8 @@
 
 <script>
 import SalesListMain from "./_components/SalesListMain.vue";
-import salesFunctions from "~/composables/contextFunctions/salesFunctions";
 import { useCategories } from "~/store/categories";
+import { useSales } from "@/store/sales";
 
 useSeoMeta({
   title: "Vendas",
@@ -32,15 +36,18 @@ definePageMeta({
 
 export default {
   setup() {
-    const store = useCategories();
+    const categoriesstore = useCategories();
+    const saleStore = useSales();
 
-    return { store };
+    return {
+      saleStore,
+      categoriesstore,
+    };
   },
   components: { SalesListMain },
   data() {
     return {
       showFilters: false,
-      salesList: [],
     };
   },
   methods: {
@@ -49,11 +56,10 @@ export default {
     },
   },
   async mounted() {
-    const [{ content: contentSale }] = await Promise.all([
-      salesFunctions.downloadAll(),
-      this.store.loadData(),
+    await Promise.all([
+      this.saleStore.loadData(),
+      this.categoriesstore.loadData(),
     ]);
-    this.salesList = contentSale;
   },
 };
 </script>

@@ -91,7 +91,7 @@
               <select @change="changeSaleType" ref="saleType">
                 <option
                   :value="payment.id"
-                  v-for="payment of paymentsMethods"
+                  v-for="payment of saleStore.paymentsMethodsList"
                   :key="payment.id"
                 >
                   {{ payment.title }}
@@ -202,11 +202,10 @@
 </template>
 
 <script>
-import salesFunctions from "~/composables/contextFunctions/salesFunctions";
-
 import { useCategories } from "@/store/categories";
 import { useProducts } from "~/store/products";
 import { useMachines } from "@/store/machines";
+import { useSales } from "~/store/sales";
 
 useSeoMeta({
   title: "Nova Venda",
@@ -221,17 +220,19 @@ export default {
     const categoriesStore = useCategories();
     const machineStore = useMachines();
     const productsStore = useProducts();
+    const saleStore = useSales();
 
     return {
       categoriesStore,
       machineStore,
       productsStore,
+      saleStore,
     };
   },
   data() {
     return {
       cartList: [],
-      paymentsMethods: [],
+
       modalView: false,
       saleTypeValue: 1,
       finalizationView: false,
@@ -250,13 +251,12 @@ export default {
     },
 
     async onLoad() {
-      const [{ content: payContent }] = await Promise.all([
-        salesFunctions.downloadPaymentsMethods(),
+      await Promise.all([
+        this.saleStore.loadData(),
         this.productsStore.loadData(),
         this.machineStore.loadData(),
         this.categoriesStore.loadData(),
       ]);
-      this.paymentsMethods = payContent;
 
       const actualDate = new Date();
       this.$refs.date.value = actualDate.toISOString().slice(0, 10);
@@ -421,7 +421,7 @@ export default {
         });
       });
 
-      const res = await salesFunctions.create(form);
+      const res = await this.saleStore.create(form);
       if (res.code === 200) {
         alert("Venta registrada correctamente");
         this.toggleModalView();

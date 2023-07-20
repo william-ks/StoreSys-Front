@@ -46,7 +46,6 @@
 </template>
 
 <script>
-import userFunctions from "~/composables/contextFunctions/userFunctions";
 import { useUser } from "~/store/user";
 
 useSeoMeta({

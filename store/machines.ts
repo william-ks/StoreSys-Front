@@ -1,6 +1,5 @@
 import { defineStore } from "pinia";
 import { useUser } from "./user";
-import userFunctions from "~/composables/contextFunctions/userFunctions";
 
 export const useMachines = defineStore('useMachines', () => {
     const userStore = useUser();
@@ -24,7 +23,7 @@ export const useMachines = defineStore('useMachines', () => {
 
             if (error.value) {
                 if (error.value?.data.code === 609) {
-                    return userFunctions.logOut();
+                    return userStore.logOut()
                 }
                 throw error;
             }
