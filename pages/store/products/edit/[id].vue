@@ -30,7 +30,7 @@
             <option value="">Todos</option>
             <option
               :value="category.id"
-              v-for="category of store.categoriesList"
+              v-for="category of categoriesStore.categoriesList"
               :key="category.id"
             >
               {{ category.description }}
@@ -97,8 +97,8 @@
   
 <script>
 import state from "@/composables/state";
-import productsFunctions from "~/composables/contextFunctions/productsFunctions";
 import { useCategories } from "@/store/categories";
+import { useProducts } from "@/store/products";
 
 useSeoMeta({
   title: "Editar Produto",
@@ -112,7 +112,8 @@ export default {
   setup() {
     const env = useRuntimeConfig();
 
-    const store = useCategories();
+    const categoriesStore = useCategories();
+    const productsStore = useProducts();
 
     const [file, setFile] = state("");
     const [image, setImage] = state({});
@@ -123,7 +124,8 @@ export default {
       setFile,
       image,
       setImage,
-      store,
+      categoriesStore,
+      productsStore,
     };
   },
   data() {
@@ -144,7 +146,7 @@ export default {
       dataForm.append("image", this.file);
 
       try {
-        const response = await productsFunctions.uploadImg(dataForm);
+        const response = await this.productsStore.uploadImg(dataForm);
 
         if (response.code === 400) {
           throw new Error(response.content);
@@ -201,7 +203,7 @@ export default {
       };
 
       try {
-        const response = await productsFunctions.update(this.id, form);
+        const response = await this.productsStore.update(this.id, form);
 
         if (response.code === 400) {
           throw new Error();
@@ -229,8 +231,8 @@ export default {
     }
 
     const [{ content: productThis }] = await Promise.all([
-      productsFunctions.downloadOne(this.id),
-      this.store.loadData(),
+      this.productsStore.downloadOne(this.id),
+      this.categoriesStore.loadData(),
     ]);
 
     this.$refs.title.value = productThis.name;

@@ -27,10 +27,10 @@
             class="categories"
             id="categories"
           >
-            <option value="">Todos</option>
+            <option value="">Categoria</option>
             <option
               :value="category.id"
-              v-for="category of store.categoriesList"
+              v-for="category of categoriesStore.categoriesList"
               :key="category.id"
             >
               {{ category.description }}
@@ -97,9 +97,9 @@
 
 
 <script>
-import productsFunctions from "~/composables/contextFunctions/productsFunctions";
 import state from "@/composables/state";
 import { useCategories } from "@/store/categories";
+import { useProducts } from "@/store/products";
 
 definePageMeta({
   middleware: ["auth"],
@@ -113,20 +113,20 @@ export default {
   setup() {
     const [file, setFile] = state("");
     const [image, setImage] = state({});
-    const store = useCategories();
+    const categoriesStore = useCategories();
+    const productsStore = useProducts();
 
     return {
       file,
       setFile,
       image,
       setImage,
-      store,
+      categoriesStore,
+      productsStore,
     };
   },
   data() {
-    return {
-      categoriesList: [],
-    };
+    return {};
   },
   methods: {
     removeImage() {
@@ -140,7 +140,7 @@ export default {
       dataForm.append("image", this.file);
 
       try {
-        const response = await productsFunctions.uploadImg(dataForm);
+        const response = await this.productsStore.uploadImg(dataForm);
 
         if (response.code === 400) {
           throw new Error(response.content);
@@ -168,7 +168,7 @@ export default {
       };
 
       try {
-        const response = await productsFunctions.create(form);
+        const response = await this.productsStore.create(form);
 
         if (response.code === 400) {
           throw new Error(response.content);
@@ -191,7 +191,7 @@ export default {
     },
   },
   mounted() {
-    this.store.loadData();
+    this.categoriesStore.loadData();
   },
 };
 </script>

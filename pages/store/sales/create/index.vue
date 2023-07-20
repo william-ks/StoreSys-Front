@@ -1,8 +1,8 @@
 <template>
   <div class="content">
-    <div class="modal" v-show="modalView" @click="toggleModalView">
+    <div class="saleModal" v-show="modalView" @click="toggleModalView">
       <div
-        class="modalBox cart"
+        class="saleModalBox cart"
         v-show="!finalizationView"
         @click="(e) => e.stopPropagation()"
       >
@@ -65,7 +65,7 @@
       </div>
 
       <div
-        class="modalBox extra"
+        class="saleModalBox extra"
         v-show="finalizationView"
         @click="(e) => e.stopPropagation()"
       >
@@ -103,7 +103,7 @@
               <select v-show="viewMachinesOption" ref="machine">
                 <option
                   :value="machine.id"
-                  v-for="machine of machinesList"
+                  v-for="machine of machineStore.machinesList"
                   :key="machine.id"
                 >
                   {{ machine.title }}
@@ -152,7 +152,7 @@
           <option value="">Categoria</option>
           <option
             :value="category.id"
-            v-for="category of store.categoriesList"
+            v-for="category of categoriesStore.categoriesList"
             :key="category.id"
           >
             {{ category.description }}
@@ -175,7 +175,7 @@
           <li
             class="productBox"
             @click="addCart(product)"
-            v-for="product of productsList"
+            v-for="product of productsStore.productList"
             :key="product.id"
           >
             <h3 class="iconSelected" v-show="verifyCountInCart(product.id)">
@@ -203,11 +203,10 @@
 
 <script>
 import salesFunctions from "~/composables/contextFunctions/salesFunctions";
-import machinesFunctions from "~/composables/contextFunctions/machinesFunctions";
-import userFunctions from "~/composables/contextFunctions/userFunctions";
-import productsFunctions from "~/composables/contextFunctions/productsFunctions";
 
 import { useCategories } from "@/store/categories";
+import { useProducts } from "~/store/products";
+import { useMachines } from "@/store/machines";
 
 useSeoMeta({
   title: "Nova Venda",
@@ -219,16 +218,19 @@ definePageMeta({
 
 export default {
   setup() {
-    const store = useCategories();
+    const categoriesStore = useCategories();
+    const machineStore = useMachines();
+    const productsStore = useProducts();
+
     return {
-      store,
+      categoriesStore,
+      machineStore,
+      productsStore,
     };
   },
   data() {
     return {
       cartList: [],
-      productsList: [],
-      machinesList: [],
       paymentsMethods: [],
       modalView: false,
       saleTypeValue: 1,
@@ -248,18 +250,12 @@ export default {
     },
 
     async onLoad() {
-      const [
-        { content: pContent },
-        { content: mContent },
-        { content: payContent },
-      ] = await Promise.all([
-        productsFunctions.downloadAll(),
-        machinesFunctions.downloadAll(),
+      const [{ content: payContent }] = await Promise.all([
         salesFunctions.downloadPaymentsMethods(),
-        this.store.loadData(),
+        this.productsStore.loadData(),
+        this.machineStore.loadData(),
+        this.categoriesStore.loadData(),
       ]);
-      this.productsList = pContent;
-      this.machinesList = mContent;
       this.paymentsMethods = payContent;
 
       const actualDate = new Date();
@@ -267,7 +263,9 @@ export default {
     },
 
     addCart(data) {
-      const product = this.productsList.find((el) => el.id === data.id);
+      const product = this.productsStore.productList.find(
+        (el) => el.id === data.id
+      );
       const IdCList = this.cartList.findIndex((el) => el.id === data.id);
 
       if (product.stock === 0) {
@@ -302,6 +300,7 @@ export default {
       newItem.value = +target.value * 100;
 
       this.cartList.splice(index, 1, newItem);
+      this.updateValueFunction();
     },
 
     editAmount(method, id) {

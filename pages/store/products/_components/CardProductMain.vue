@@ -26,18 +26,15 @@
   </div>
 </template>
 
-<script setup>
-import ConfirmModal from "@/components/Modal/ConfirmModal.vue";
-</script>
-
 <script>
+import ConfirmModal from "@/components/Modal/ConfirmModal.vue";
 export default {
   data() {
     return {
       confirmModalB: false,
     };
   },
-  name: "cardProduct",
+  components: { ConfirmModal },
   props: {
     id: Number,
     title: String,

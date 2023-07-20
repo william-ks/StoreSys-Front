@@ -2,7 +2,7 @@ import { defineStore } from 'pinia';
 import { useUser } from './user'
 
 export const useCategories = defineStore('categories', () => {
-    const { api, token } = useUser();
+    const userStore = useUser();
 
     const categoriesList = useState('categoriesList', () => []);
 
@@ -14,11 +14,11 @@ export const useCategories = defineStore('categories', () => {
 
     async function downloadAll() {
         try {
-            const res: any = await useFetch(`${api}/category`, {
+            const res: any = await useFetch(`${userStore.api}/category`, {
                 method: "GET",
                 headers: {
                     "Content-Type": "application/json",
-                    authorization: `Bearer ${token}`,
+                    authorization: `Bearer ${userStore.token}`,
                 },
             });
 
@@ -33,11 +33,11 @@ export const useCategories = defineStore('categories', () => {
 
     async function create(description: string) {
         try {
-            const res: any = await useFetch(`${api}/category`, {
+            const res: any = await useFetch(`${userStore.api}/category`, {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
-                    authorization: `Bearer ${token}`,
+                    authorization: `Bearer ${userStore.token}`,
                 },
                 body: {
                     description

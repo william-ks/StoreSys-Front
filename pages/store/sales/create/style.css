@@ -182,7 +182,7 @@ header {
 /* ICON CART - END */
 
 /* MODAL */
-.modal {
+.saleModal {
     width: 100%;
     height: 100vh;
     position: fixed;
@@ -200,7 +200,7 @@ header {
     overflow: hidden;
 }
 
-.modal .forms {
+.saleModal .forms {
     padding: 15px 4%;
     width: 100%;
     display: flex;
@@ -210,7 +210,7 @@ header {
     gap: 15px;
 }
 
-.modal .formItem {
+.saleModal .formItem {
     width: 100%;
 }
 
@@ -221,20 +221,20 @@ header {
     gap: 10px;
 }
 
-.modal .inputTitle {
+.saleModal .inputTitle {
     font-weight: 400;
 }
 
-.modal .formItem select {
+.saleModal .formItem select {
     width: 100%;
 }
 
-.modal .inputTitle span {
+.saleModal .inputTitle span {
     font-size: 0.9rem;
     font-weight: 300;
 }
 
-.modal .modalBox {
+.saleModal .saleModalBox {
     max-height: 95%;
     width: clamp(150px, 98%, 700px);
     /* padding: 45px 4% 25px 4%; */
@@ -245,7 +245,7 @@ header {
     border: none;
 }
 
-.modal .close {
+.saleModal .close {
     position: absolute;
     right: 10px;
     top: 5px;
@@ -253,13 +253,13 @@ header {
     font-size: 1.7em;
 }
 
-.modal .close svg {
+.saleModal .close svg {
     cursor: pointer;
     color: white;
     filter: drop-shadow(1px 1px 1px rgba(0, 0, 0, 0.45));
 }
 
-.modal h1.title {
+.saleModal h1.title {
     width: 100%;
 
     color: white;
@@ -270,7 +270,7 @@ header {
     border-radius: 3px 3px 0 0;
 }
 
-.modal .modalCartList {
+.saleModal .modalCartList {
     width: 100%;
     display: flex;
     justify-content: flex-start;
@@ -405,7 +405,7 @@ header {
     text-align: center;
 }
 
-.modal .opts {
+.saleModal .opts {
     margin-top: 10px;
     padding: 10px 4%;
     width: 100%;
@@ -417,7 +417,7 @@ header {
     border-top: 1px solid #ccc;
 }
 
-.modal .pages {
+.saleModal .pages {
     width: 100%;
     display: flex;
     justify-content: center;
@@ -426,7 +426,7 @@ header {
     margin: 15px 0;
 }
 
-.modal .pages .page {
+.saleModal .pages .page {
     width: 15px;
     height: 15px;
     background-color: rgb(196, 196, 196);
@@ -434,11 +434,11 @@ header {
     cursor: pointer;
 }
 
-.modal .pages .page.selected {
+.saleModal .pages .page.selected {
     background-color: #4caf50;
 }
 
-.modal .totalValue {
+.saleModal .totalValue {
     font-weight: 300;
     font-size: 1.2rem;
 }
@@ -492,11 +492,11 @@ header {
         font-size: 0.8rem;
     }
 
-    .modal h1.title {
+    .saleModal h1.title {
         font-size: 1.3rem;
     }
 
-    .modal .close {
+    .saleModal .close {
         right: -10px;
         top: -10px;
         transition: color 0.25s;

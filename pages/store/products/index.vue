@@ -7,7 +7,7 @@
           <option value="">Todos</option>
           <option
             :value="category.id"
-            v-for="category of store.categoriesList"
+            v-for="category of categoriesStore.categoriesList"
             :key="category.id"
           >
             {{ category.description }}
@@ -28,7 +28,7 @@
         </h2>
         <div class="productsBox">
           <ul class="products">
-            <li v-for="item of productList" :key="item.id">
+            <li v-for="item of productsStore.productList" :key="item.id">
               <CardProductMain
                 :id="item.id"
                 :title="item.name"
@@ -49,6 +49,7 @@
 import productsFunctions from "~/composables/contextFunctions/productsFunctions";
 import CardProductMain from "./_components/CardProductMain.vue";
 import { useCategories } from "~/store/categories";
+import { useProducts } from "~/store/products";
 
 useSeoMeta({
   title: "Estoque",
@@ -58,30 +59,22 @@ definePageMeta({
   middleware: ["auth"],
 });
 
-const productList = useState("productList", () => []);
-const store = useCategories();
+// const productList = useState("productList", () => []);
+const categoriesStore = useCategories();
+const productsStore = useProducts();
 
 const onLoad = async () => {
-  const [{ content: contentProducts }] = await Promise.all([
-    productsFunctions.downloadAll(),
-    store.loadData(),
-  ]);
-
-  productList.value = contentProducts;
+  await Promise.all([productsStore.loadData(), categoriesStore.loadData()]);
 };
 await onLoad();
 
 const delUpdate = async (id) => {
   try {
-    const response = await productsFunctions.del(id);
+    const response = await productsStore.del(id);
 
     if (response.code === 400) {
       throw new Error(response.content);
     }
-
-    const { content: contentProducts } = await productsFunctions.downloadAll();
-
-    productList.value = contentProducts;
   } catch (e) {
     alert("Erro ao excluir produto");
     return;

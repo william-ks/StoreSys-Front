@@ -1,26 +1,24 @@
 <template>
   <header>
     <div class="center">
-      <NuxtLink to="/" class="userName">
+      <h3 class="userName" @click="userStore.logOut">
         <Icon name="ph:user-circle" />
-        {{ user }}
-      </NuxtLink>
+        {{ userStore.user }}
+      </h3>
     </div>
   </header>
 </template>
 
 <script>
-import utils from "~/composables/utils";
+import { useUser } from "~/store/user";
 
 export default {
-  data() {
+  setup() {
+    const userStore = useUser();
+
     return {
-      user: "",
+      userStore,
     };
-  },
-  mounted() {
-    const { user } = utils();
-    this.user = user;
   },
 };
 </script>
@@ -36,7 +34,7 @@ header {
   /* box-shadow: 0 5px 10px rgb(0 0 0 / 5%); */
 }
 
-header>.center {
+header > .center {
   display: flex;
   justify-content: flex-end;
   align-content: center;
@@ -51,6 +49,7 @@ header>.center {
   font-weight: 300;
   font-size: 1.1rem;
   text-transform: capitalize;
+  cursor: pointer;
 }
 
 .userName svg {

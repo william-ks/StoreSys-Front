@@ -45,29 +45,35 @@
   </main>
 </template>
 
-<script setup>
+<script>
 import userFunctions from "~/composables/contextFunctions/userFunctions";
-import utils from "@/composables/utils";
-
-const { token } = utils();
-
-if (token.value) {
-  const response = await userFunctions.validateLogin();
-  if (response.code === 200) navigateTo("/store/products");
-}
+import { useUser } from "~/store/user";
 
 useSeoMeta({
   title: "Login",
 });
-</script>
 
-<script>
 definePageMeta({
   layout: false,
 });
 
 export default {
-  name: "Login Page",
+  async setup() {
+    const userStore = useUser();
+
+    if (!userStore.token) {
+      userStore.removeCookies();
+    } else {
+      const res = await userStore.getUserInfoFromToken();
+      if (res.code !== 200) {
+        userStore.removeCookies();
+      } else {
+        navigateTo("/store/products");
+      }
+    }
+
+    return { userStore };
+  },
   data() {
     return {
       seePass: false,
@@ -93,7 +99,7 @@ export default {
 
       try {
         this.loading = true;
-        const response = await userFunctions.login(form);
+        const response = await this.userStore.login(form);
 
         if (response.code === 400) {
           throw response.error;
@@ -106,13 +112,14 @@ export default {
           navigateTo("/store/products");
         }
       } catch (e) {
-        if (e.value.data.message) alert(e.value.data.message);
+        alert("Não foi possível fazer login");
         return;
       } finally {
         this.loading = false;
       }
     },
   },
+  async mounted() {},
 };
 </script>
 

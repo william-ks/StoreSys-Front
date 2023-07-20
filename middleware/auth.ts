@@ -1,20 +1,16 @@
-import userFunctions from "~/composables/contextFunctions/userFunctions";
-import utils from "~/composables/utils";
+import { useUser } from "~/store/user";
 
 export default defineNuxtRouteMiddleware(async (to) => {
-  const { token, user } = utils();
+  const userStore = useUser();
 
 
-  if (!token.value) {
-    token.value = null;
-    user.value = null;
-
+  if (!userStore.token) {
+    userStore.removeCookies();
     return "/"
   } else {
-    const res: any = await userFunctions.getUserInfoFromToken();
+    const res: any = await userStore.getUserInfoFromToken();
     if (res.code !== 200) {
-      token.value = null;
-      user.value = null;
+      userStore.removeCookies();
       return "/"
     }
   }
