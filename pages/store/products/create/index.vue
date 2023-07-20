@@ -30,7 +30,7 @@
             <option value="">Todos</option>
             <option
               :value="category.id"
-              v-for="category of categoriesList"
+              v-for="category of store.categoriesList"
               :key="category.id"
             >
               {{ category.description }}
@@ -100,6 +100,7 @@
 import categoriesFunctions from "~/composables/contextFunctions/categoriesFunctions";
 import productsFunctions from "~/composables/contextFunctions/productsFunctions";
 import state from "@/composables/state";
+import { useCategories } from "@/store/categories";
 
 definePageMeta({
   middleware: ["auth"],
@@ -113,12 +114,14 @@ export default {
   setup() {
     const [file, setFile] = state("");
     const [image, setImage] = state({});
+    const store = useCategories();
 
     return {
       file,
       setFile,
       image,
       setImage,
+      store,
     };
   },
   data() {
@@ -188,9 +191,8 @@ export default {
       this.uploadImage();
     },
   },
-  async mounted() {
-    const { content: contentCategories } = await categoriesFunctions.download();
-    this.categoriesList = contentCategories;
+  mounted() {
+    this.store.loadData();
   },
 };
 </script>

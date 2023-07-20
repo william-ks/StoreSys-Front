@@ -30,7 +30,7 @@
             <option value="">Todos</option>
             <option
               :value="category.id"
-              v-for="category of categoriesList"
+              v-for="category of store.categoriesList"
               :key="category.id"
             >
               {{ category.description }}
@@ -97,8 +97,8 @@
   
 <script>
 import state from "@/composables/state";
-import categoriesFunctions from "~/composables/contextFunctions/categoriesFunctions";
 import productsFunctions from "~/composables/contextFunctions/productsFunctions";
+import { useCategories } from "@/store/categories";
 
 useSeoMeta({
   title: "Editar Produto",
@@ -112,6 +112,8 @@ export default {
   setup() {
     const env = useRuntimeConfig();
 
+    const store = useCategories();
+
     const [file, setFile] = state("");
     const [image, setImage] = state({});
 
@@ -121,12 +123,12 @@ export default {
       setFile,
       image,
       setImage,
+      store,
     };
   },
   data() {
     return {
       id: this.$route.params.id,
-      categoriesList: [],
     };
   },
 
@@ -226,12 +228,10 @@ export default {
       navigateTo("/store/products");
     }
 
-    const { content: contentCategories } = await categoriesFunctions.download();
-    this.categoriesList = contentCategories;
-
-    const { content: productThis } = await productsFunctions.downloadOne(
-      this.id
-    );
+    const [{ content: productThis }] = await Promise.all([
+      productsFunctions.downloadOne(this.id),
+      this.store.loadData(),
+    ]);
 
     this.$refs.title.value = productThis.name;
     this.$refs.code.value = productThis.code;

@@ -6,6 +6,12 @@ export const useCategories = defineStore('categories', () => {
 
     const categoriesList = useState('categoriesList', () => []);
 
+    async function loadData() {
+        if (categoriesList.value.length <= 0) {
+            await downloadAll();
+        }
+    }
+
     async function downloadAll() {
         try {
             const res: any = await useFetch(`${api}/category`, {
@@ -57,6 +63,7 @@ export const useCategories = defineStore('categories', () => {
     return {
         categoriesList,
         downloadAll,
-        create
+        create,
+        loadData
     }
 })
