@@ -3,13 +3,14 @@ export default {};
 </script>
 
 <template>
-  <ModalBase>
-    <h1>Você tem certeza ?</h1>
-    <div class="buttons">
-      <button @click="$emit('yes')" class="button yes">Sim</button>
-      <button @click="$emit('close')" class="button no">Não</button>
+  <div class="modal" @click="$emit('close')">
+    <div class="modalBox" @click="(e) => e.stopPropagation()">
+      <div class="close">
+        <Icon @click="$emit('close')" name="mdi:window-close" />
+      </div>
+      <slot />
     </div>
-  </ModalBase>
+  </div>
 </template>
 
 
