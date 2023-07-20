@@ -35,7 +35,7 @@ export default {};
 
 .modalBox {
   width: clamp(150px, 100%, 500px);
-  padding: 45px 4% 25px 4%;
+  padding: 15px 4% 25px 4%;
   background-color: white;
   box-shadow: 0 5px 10px rgba(0, 0, 0, 0.3);
   border-radius: 5px;
