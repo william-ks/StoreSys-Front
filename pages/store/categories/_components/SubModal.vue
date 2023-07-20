@@ -7,7 +7,7 @@
         <span> Editar </span>
       </button>
       <button class="button bt" @click="closeEmit('del')">
-        <Icon name="ic:twotone-delete-outline" />
+        <Icon name="material-symbols:delete-outline" />
         <span> Deletar </span>
       </button>
     </div>

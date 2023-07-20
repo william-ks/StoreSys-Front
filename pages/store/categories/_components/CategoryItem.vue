@@ -19,7 +19,7 @@
 
     <h3>{{ data.description }}</h3>
     <div class="iconSpan">
-      <Icon name="material-symbols:delete-outline" @click="changeSubModal" />
+      <Icon name="mi:options-vertical" @click="changeSubModal" />
     </div>
   </li>
 </template>

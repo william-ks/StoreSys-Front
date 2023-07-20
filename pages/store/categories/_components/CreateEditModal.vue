@@ -1,20 +1,17 @@
 <template>
   <ModalBase>
     <h1>{{ !data ? "Nova" : "Editar" }} categoria</h1>
-    <form>
-      <label for="">
+    <form @submit="!data ? handleSubmitAdd() : handleSubmitUpdate()">
+      <label for="input">
         <p>Nome:</p>
-        <input type="text" ref="input" placeholder="exemplo" />
+        <input type="text" id="input" ref="input" placeholder="exemplo" />
       </label>
+      <div class="opt">
+        <button class="button">
+          {{ !data ? "Adicionar" : "Salvar" }}
+        </button>
+      </div>
     </form>
-    <div class="opt">
-      <button
-        class="button"
-        @click="!data ? handleSubmitAdd() : handleSubmitUpdate()"
-      >
-        {{ !data ? "Adicionar" : "Salvar" }}
-      </button>
-    </div>
   </ModalBase>
 </template>
 
@@ -50,6 +47,8 @@ export default {
       } else {
         this.$emit("close");
       }
+
+      this.$refs.input.value = "";
     },
     async handleSubmitUpdate() {
       if (!this.$refs.input.value) return;
@@ -65,6 +64,8 @@ export default {
       } else {
         this.$emit("close");
       }
+
+      this.$refs.input.value = "";
     },
   },
   mounted() {
