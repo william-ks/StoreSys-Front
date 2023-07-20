@@ -73,7 +73,6 @@ const onLoad = async () => {
 };
 await onLoad();
 
-
 const delUpdate = async (id) => {
   try {
     const response = await productsFunctions.del(id);
@@ -144,7 +143,7 @@ const delUpdate = async (id) => {
 }
 
 .productsBox {
-  padding: 0 4%;
+  padding: 0 4% 15px 4%;
 }
 
 .productsTitle {
