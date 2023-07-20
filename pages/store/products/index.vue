@@ -46,20 +46,10 @@
 </template>
 
 <script setup>
-import productsFunctions from "~/composables/contextFunctions/productsFunctions";
-import CardProductMain from "./_components/CardProductMain.vue";
 import { useCategories } from "~/store/categories";
 import { useProducts } from "~/store/products";
+import CardProductMain from "./_components/CardProductMain.vue";
 
-useSeoMeta({
-  title: "Estoque",
-});
-
-definePageMeta({
-  middleware: ["auth"],
-});
-
-// const productList = useState("productList", () => []);
 const categoriesStore = useCategories();
 const productsStore = useProducts();
 
@@ -80,6 +70,18 @@ const delUpdate = async (id) => {
     return;
   }
 };
+</script>
+
+<script>
+useSeoMeta({
+  title: "Estoque",
+});
+
+definePageMeta({
+  middleware: ["auth"],
+});
+
+export default {};
 </script>
 
 <style scoped>

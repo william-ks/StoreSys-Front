@@ -25,6 +25,7 @@ import { useCategories } from "~/store/categories";
 useSeoMeta({
   title: "Vendas",
 });
+
 definePageMeta({
   middleware: ["auth"],
 });

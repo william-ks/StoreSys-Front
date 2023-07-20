@@ -1,51 +1,57 @@
 <template>
   <div class="content">
+    <CreateEditModal v-show="viewCreateModal" @close="handleAdd" />
     <div class="center">
-      <button class="button add">
+      <button class="button add" @click="handleAdd">
         <Icon name="material-symbols:add" />
-        <span>Adicionar categoria</span>
+        <span>Nova categoria</span>
       </button>
       <ul class="categoriesList">
-        <li
-          class="categoriesItem"
-          v-for="category of categoriesList"
+        <CategoryItem
+          v-for="category of store.categoriesList"
           :key="category.id"
-        >
-          <span>{{ category.description }}</span>
-          <Icon @click="handleAddCategory" name="humbleicons:dots-vertical" />
-        </li>
+          :data="category"
+        />
       </ul>
     </div>
   </div>
 </template>
 
-<script setup>
-import categoriesFunctions from "~/composables/contextFunctions/categoriesFunctions";
+<script>
+import CategoryItem from "./_components/CategoryItem";
+import CreateEditModal from "./_components/CreateEditModal";
+import { useCategories } from "@/store/categories";
 
 useSeoMeta({
   title: "Categorias",
 });
-</script>
-  
-<script>
+
 definePageMeta({
   middleware: ["auth"],
 });
 
 export default {
+  setup() {
+    const store = useCategories();
+
+    return { store };
+  },
+  components: {
+    CreateEditModal,
+    CategoryItem,
+  },
   data() {
     return {
-      categoriesList: [],
+      viewCreateModal: false,
     };
   },
   methods: {
-    handleAddCategory() {
-      console.log("here");
+    handleAdd() {
+      this.viewCreateModal = !this.viewCreateModal;
     },
   },
-  async mounted() {
-    const { content } = await categoriesFunctions.download();
-    this.categoriesList = content;
+  mounted() {
+    this.store.loadData();
   },
 };
 </script>

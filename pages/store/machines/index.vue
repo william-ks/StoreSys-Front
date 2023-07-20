@@ -1,22 +1,20 @@
 <template>
-    <div class="content">
-      <div class="center"></div>
-    </div>
-  </template>
-  
-  <script setup>
-  useSeoMeta({
-    title: "Maquininhas",
-  });
-  </script>
+  <div class="content">
+    <div class="center"></div>
+  </div>
+</template>
     
   <script>
-  definePageMeta({
-    middleware: ["auth"],
-  });
-  
-  export default {};
-  </script>
+useSeoMeta({
+  title: "Maquininhas",
+});
+
+definePageMeta({
+  middleware: ["auth"],
+});
+
+export default {};
+</script>
     
   <style scoped>
-  </style>
+</style>

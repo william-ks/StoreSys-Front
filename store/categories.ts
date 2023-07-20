@@ -1,5 +1,11 @@
 import { defineStore } from 'pinia';
 import { useUser } from './user'
+import { type } from 'os';
+
+type UpdateCategory = {
+    id: number,
+    description: string
+}
 
 export const useCategories = defineStore('categories', () => {
     const userStore = useUser();
@@ -60,10 +66,67 @@ export const useCategories = defineStore('categories', () => {
         }
     }
 
+    async function del(id: number) {
+        try {
+            const res: any = await useFetch(`${userStore.api}/category/${id}`, {
+                method: "DELETE",
+                headers: {
+                    "Content-Type": "application/json",
+                    authorization: `Bearer ${userStore.token}`,
+                }
+            });
+
+            if (res.error.value) {
+                throw res.error;
+            }
+
+            await downloadAll();
+            return {
+                code: 200,
+            };
+        } catch (e: any) {
+            return {
+                code: 400,
+                error: e.value.data.message,
+            };
+        }
+    }
+
+    async function update({ description, id }: UpdateCategory) {
+        try {
+            const res: any = await useFetch(`${userStore.api}/category/${id}`, {
+                method: "PUT",
+                headers: {
+                    "Content-Type": "application/json",
+                    authorization: `Bearer ${userStore.token}`,
+                },
+                body: {
+                    description,
+                }
+            });
+
+            if (res.error.value) {
+                throw res.error;
+            }
+
+            await downloadAll();
+            return {
+                code: 200,
+            };
+        } catch (e: any) {
+            return {
+                code: 400,
+                error: e.value.data.message,
+            };
+        }
+    }
+
     return {
         categoriesList,
         downloadAll,
         create,
-        loadData
+        loadData,
+        update,
+        del
     }
 })
