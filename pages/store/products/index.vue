@@ -7,7 +7,7 @@
           <option value="">Todos</option>
           <option
             :value="category.id"
-            v-for="category of categoriesList"
+            v-for="category of store.categoriesList"
             :key="category.id"
           >
             {{ category.description }}
@@ -46,9 +46,9 @@
 </template>
 
 <script setup>
-import categoriesFunctions from "~/composables/contextFunctions/categoriesFunctions";
 import productsFunctions from "~/composables/contextFunctions/productsFunctions";
 import CardProductMain from "./_components/CardProductMain.vue";
+import { useCategories } from "~/store/categories";
 
 useSeoMeta({
   title: "Estoque",
@@ -59,17 +59,15 @@ definePageMeta({
 });
 
 const productList = useState("productList", () => []);
-const categoriesList = useState("categoriesList", () => []);
+const store = useCategories();
 
 const onLoad = async () => {
-  const [{ content: contentCategories }, { content: contentProducts }] =
-    await Promise.all([
-      categoriesFunctions.download(),
-      productsFunctions.downloadAll(),
-    ]);
+  const [{ content: contentProducts }] = await Promise.all([
+    productsFunctions.downloadAll(),
+    store.loadData(),
+  ]);
 
   productList.value = contentProducts;
-  categoriesList.value = contentCategories;
 };
 await onLoad();
 

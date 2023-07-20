@@ -17,26 +17,29 @@
   </div>
 </template>
 
-<script setup>
+<script>
 import SalesListMain from "./_components/SalesListMain.vue";
 import salesFunctions from "~/composables/contextFunctions/salesFunctions";
-import categoriesFunctions from "~/composables/contextFunctions/categoriesFunctions";
+import { useCategories } from "~/store/categories";
+
 useSeoMeta({
   title: "Vendas",
 });
-</script>
-
-<script>
 definePageMeta({
   middleware: ["auth"],
 });
 
 export default {
+  setup() {
+    const store = useCategories();
+
+    return { store };
+  },
+  components: { SalesListMain },
   data() {
     return {
       showFilters: false,
       salesList: [],
-      categoryList: [],
     };
   },
   methods: {
@@ -45,11 +48,11 @@ export default {
     },
   },
   async mounted() {
-    const { content: contentSale } = await salesFunctions.downloadAll();
+    const [{ content: contentSale }] = await Promise.all([
+      salesFunctions.downloadAll(),
+      this.store.loadData(),
+    ]);
     this.salesList = contentSale;
-
-    const { content: contentCategory } = await categoriesFunctions.download();
-    this.categoryList = contentCategory;
   },
 };
 </script>

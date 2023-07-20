@@ -152,7 +152,7 @@
           <option value="">Categoria</option>
           <option
             :value="category.id"
-            v-for="category of categoryList"
+            v-for="category of store.categoriesList"
             :key="category.id"
           >
             {{ category.description }}
@@ -205,8 +205,9 @@
 import salesFunctions from "~/composables/contextFunctions/salesFunctions";
 import machinesFunctions from "~/composables/contextFunctions/machinesFunctions";
 import userFunctions from "~/composables/contextFunctions/userFunctions";
-import categoriesFunctions from "~/composables/contextFunctions/categoriesFunctions";
 import productsFunctions from "~/composables/contextFunctions/productsFunctions";
+
+import { useCategories } from "@/store/categories";
 
 useSeoMeta({
   title: "Nova Venda",
@@ -217,11 +218,15 @@ definePageMeta({
 });
 
 export default {
-  setup() {},
+  setup() {
+    const store = useCategories();
+    return {
+      store,
+    };
+  },
   data() {
     return {
       cartList: [],
-      categoryList: [],
       productsList: [],
       machinesList: [],
       paymentsMethods: [],
@@ -245,17 +250,15 @@ export default {
     async onLoad() {
       const [
         { content: pContent },
-        { content: cContent },
         { content: mContent },
         { content: payContent },
       ] = await Promise.all([
         productsFunctions.downloadAll(),
-        categoriesFunctions.download(),
         machinesFunctions.downloadAll(),
         salesFunctions.downloadPaymentsMethods(),
+        this.store.loadData(),
       ]);
       this.productsList = pContent;
-      this.categoryList = cContent;
       this.machinesList = mContent;
       this.paymentsMethods = payContent;
 

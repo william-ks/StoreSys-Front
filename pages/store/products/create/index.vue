@@ -97,7 +97,6 @@
 
 
 <script>
-import categoriesFunctions from "~/composables/contextFunctions/categoriesFunctions";
 import productsFunctions from "~/composables/contextFunctions/productsFunctions";
 import state from "@/composables/state";
 import { useCategories } from "@/store/categories";
