@@ -1,5 +1,6 @@
 <template>
   <ModalBase>
+    <LoadingModal v-show="loadingModal" />
     <h1>{{ !data ? "Nova" : "Editar" }} categoria</h1>
     <form @submit="!data ? handleSubmitAdd() : handleSubmitUpdate()">
       <label for="input">
@@ -31,7 +32,7 @@ export default {
   },
   data() {
     return {
-      loading: false,
+      loadingModal: false,
     };
   },
   methods: {
@@ -40,32 +41,41 @@ export default {
 
       let description = this.$refs.input.value;
 
-      const response = await this.store.create(description);
+      try {
+        this.loadingModal = true;
+        const response = await this.store.create(description);
 
-      if (response.code !== 200) {
-        alert("Erro ao adicionar a nova categoria");
-      } else {
-        this.$emit("close");
+        if (response.code !== 200) {
+          alert("Erro ao adicionar a nova categoria");
+        } else {
+          this.$emit("close");
+        }
+
+        this.$refs.input.value = "";
+      } finally {
+        this.loadingModal = false;
       }
-
-      this.$refs.input.value = "";
     },
     async handleSubmitUpdate() {
       if (!this.$refs.input.value) return;
 
       let description = this.$refs.input.value;
 
-      const response = await this.store.update({
-        id: this.data.id,
-        description,
-      });
-      if (response.code !== 200) {
-        alert("Erro ao editar a categoria");
-      } else {
-        this.$emit("close");
+      try {
+        this.loadingModal = true;
+        const response = await this.store.update({
+          id: this.data.id,
+          description,
+        });
+        if (response.code !== 200) {
+          alert("Erro ao editar a categoria");
+        } else {
+          this.$emit("close");
+        }
+        this.$refs.input.value = "";
+      } finally {
+        this.loadingModal = false;
       }
-
-      this.$refs.input.value = "";
     },
   },
   mounted() {

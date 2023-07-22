@@ -1,5 +1,6 @@
 <template>
   <div class="main">
+    <LoadingModal v-show="loadingModal" />
     <h1 class="pageTitle">Editar Produto</h1>
 
     <form class="form">
@@ -99,8 +100,9 @@
 import state from "@/composables/state";
 import { useCategories } from "@/store/categories";
 import { useProducts } from "@/store/products";
+import { usePage } from "~/store/page";
 
-useSeoMeta({
+useHead({
   title: "Editar Produto",
 });
 
@@ -114,6 +116,10 @@ export default {
 
     const categoriesStore = useCategories();
     const productsStore = useProducts();
+
+    const pageStore = usePage();
+
+    pageStore.title = "Editar Produto";
 
     const [file, setFile] = state("");
     const [image, setImage] = state({});
@@ -131,6 +137,7 @@ export default {
   data() {
     return {
       id: this.$route.params.id,
+      loadingModal: false,
     };
   },
 
@@ -146,6 +153,7 @@ export default {
       dataForm.append("image", this.file);
 
       try {
+        this.loadingModal = true;
         const response = await this.productsStore.uploadImg(dataForm);
 
         if (response.code === 400) {
@@ -156,10 +164,13 @@ export default {
       } catch (e) {
         alert("Ocorreu um erro ao enviar a imagem.");
         return;
+      } finally {
+        this.loadingModal = false;
       }
     },
     async getThisProduct() {
       try {
+        this.loadingModal = true;
         const { error, data } = await useFetch(
           `${this.env.public.apiBase}/product/${this.id}`,
           {
@@ -185,6 +196,8 @@ export default {
       } catch (e) {
         alert("Ocorreu um erro ao ler as informações do produto.");
         return;
+      } finally {
+        this.loadingModal = true;
       }
     },
 
@@ -203,6 +216,7 @@ export default {
       };
 
       try {
+        this.loadingModal = true;
         const response = await this.productsStore.update(this.id, form);
 
         if (response.code === 400) {
@@ -213,6 +227,8 @@ export default {
       } catch (e) {
         alert("Ocorreu um erro ao salvar o produto");
         return;
+      } finally {
+        this.loadingModal = true;
       }
     },
 
@@ -229,23 +245,26 @@ export default {
     if (!Number(this.id)) {
       navigateTo("/store/products");
     }
+    try {
+      const [{ content: productThis }] = await Promise.all([
+        this.productsStore.downloadOne(this.id),
+        this.categoriesStore.loadData(),
+      ]);
 
-    const [{ content: productThis }] = await Promise.all([
-      this.productsStore.downloadOne(this.id),
-      this.categoriesStore.loadData(),
-    ]);
+      this.$refs.title.value = productThis.name;
+      this.$refs.code.value = productThis.code;
+      this.$refs.category.value = productThis.category_id;
+      this.$refs.stock.value = productThis.stock;
+      this.$refs.price.value = productThis.value / 100;
+      this.$refs.description.value = productThis.description;
 
-    this.$refs.title.value = productThis.name;
-    this.$refs.code.value = productThis.code;
-    this.$refs.category.value = productThis.category_id;
-    this.$refs.stock.value = productThis.stock;
-    this.$refs.price.value = productThis.value / 100;
-    this.$refs.description.value = productThis.description;
-
-    this.setImage({
-      url: productThis.image.url,
-      path: productThis.image.path,
-    });
+      this.setImage({
+        url: productThis.image.url,
+        path: productThis.image.path,
+      });
+    } finally {
+      this.loadingModal = false;
+    }
   },
 };
 </script>

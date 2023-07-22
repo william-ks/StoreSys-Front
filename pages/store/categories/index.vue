@@ -1,5 +1,6 @@
 <template>
   <div class="content">
+    <LoadingModal v-show="loadingModal" />
     <CreateEditModal v-show="viewCreateModal" @close="handleAdd" />
     <div class="center">
       <button class="button add" @click="handleAdd">
@@ -21,10 +22,7 @@
 import CategoryItem from "./_components/CategoryItem";
 import CreateEditModal from "./_components/CreateEditModal";
 import { useCategories } from "@/store/categories";
-
-useSeoMeta({
-  title: "Categorias",
-});
+import { usePage } from "~/store/page";
 
 definePageMeta({
   middleware: ["auth"],
@@ -32,6 +30,14 @@ definePageMeta({
 
 export default {
   setup() {
+    useHead({
+      title: "Categorias",
+    });
+
+    const pageStore = usePage();
+
+    pageStore.title = "Categorias";
+
     const store = useCategories();
 
     return { store };
@@ -43,6 +49,7 @@ export default {
   data() {
     return {
       viewCreateModal: false,
+      loadingModal: false,
     };
   },
   methods: {
@@ -50,8 +57,13 @@ export default {
       this.viewCreateModal = !this.viewCreateModal;
     },
   },
-  mounted() {
-    this.store.loadData();
+  async mounted() {
+    try {
+      this.loadingModal = true;
+      await this.store.loadData();
+    } finally {
+      this.loadingModal = false;
+    }
   },
 };
 </script>

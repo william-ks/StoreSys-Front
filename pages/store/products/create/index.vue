@@ -1,5 +1,6 @@
 <template>
   <div class="main">
+    <LoadingModal v-show="LoadingModal" />
     <h1 class="pageTitle">Cadastrar Produto</h1>
 
     <form class="form">
@@ -100,12 +101,13 @@
 import state from "@/composables/state";
 import { useCategories } from "@/store/categories";
 import { useProducts } from "@/store/products";
+import { usePage } from "~/store/page";
 
 definePageMeta({
   middleware: ["auth"],
 });
 
-useSeoMeta({
+useHead({
   title: "Criar Produto",
 });
 
@@ -115,6 +117,10 @@ export default {
     const [image, setImage] = state({});
     const categoriesStore = useCategories();
     const productsStore = useProducts();
+
+    const pageStore = usePage();
+
+    pageStore.title = "Novo Produto";
 
     return {
       file,
@@ -126,7 +132,9 @@ export default {
     };
   },
   data() {
-    return {};
+    return {
+      LoadingModal: false,
+    };
   },
   methods: {
     removeImage() {
@@ -140,6 +148,7 @@ export default {
       dataForm.append("image", this.file);
 
       try {
+        this.LoadingModal = true;
         const response = await this.productsStore.uploadImg(dataForm);
 
         if (response.code === 400) {
@@ -150,6 +159,8 @@ export default {
       } catch (e) {
         alert("Ocorreu um erro ao enviar a imagem.");
         return;
+      } finally {
+        this.LoadingModal = false;
       }
     },
 
@@ -168,6 +179,7 @@ export default {
       };
 
       try {
+        this.LoadingModal = true;
         const response = await this.productsStore.create(form);
 
         if (response.code === 400) {
@@ -178,6 +190,8 @@ export default {
       } catch (e) {
         alert("Ocorreu um erro ao salvar o produto");
         return;
+      } finally {
+        this.LoadingModal = false;
       }
     },
 

@@ -23,7 +23,6 @@
 </template>
 
 <script>
-import utils from "~/composables/utils";
 export default {
   props: {
     sideBar: Boolean,
@@ -31,7 +30,6 @@ export default {
   data() {
     return {
       isChecked: false,
-      officeValue: 0,
       routes: [
         {
           title: "Vendas",
@@ -83,8 +81,7 @@ export default {
     },
   },
   mounted() {
-    const { office } = utils();
-    this.officeValue = +office.value;
+
   },
 };
 </script>

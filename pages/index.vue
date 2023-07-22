@@ -48,16 +48,15 @@
 <script>
 import { useUser } from "~/store/user";
 
-useSeoMeta({
-  title: "Login",
-});
-
 definePageMeta({
   layout: false,
 });
 
 export default {
   async setup() {
+    useHead({
+      title: "Login",
+    });
     const userStore = useUser();
 
     if (!userStore.token) {

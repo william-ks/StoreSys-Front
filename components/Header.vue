@@ -1,9 +1,9 @@
 <template>
   <header>
     <div class="center">
+      <h2 class="pageTitle">{{ pageStore.title }}</h2>
       <h3 class="userName" @click="userStore.logOut">
         <Icon name="ph:user-circle" />
-        {{ userStore.user }}
       </h3>
     </div>
   </header>
@@ -11,13 +11,16 @@
 
 <script>
 import { useUser } from "~/store/user";
+import { usePage } from "@/store/page";
 
 export default {
   setup() {
     const userStore = useUser();
+    const pageStore = usePage();
 
     return {
       userStore,
+      pageStore,
     };
   },
 };
@@ -26,7 +29,7 @@ export default {
 <style scoped>
 header {
   width: 100%;
-  padding: 21.8px 0;
+  padding: 19px 0;
   background-color: white;
   position: relative;
   z-index: 0;
@@ -38,6 +41,17 @@ header > .center {
   display: flex;
   justify-content: flex-end;
   align-content: center;
+  position: relative;
+}
+
+.pageTitle {
+  left: 50%;
+  top: 50%;
+  position: absolute;
+  transform: translate(-50%, -50%);
+  font-weight: 300;
+  font-size: 1.7rem;
+  text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.541);
 }
 
 .userName {
@@ -53,6 +67,6 @@ header > .center {
 }
 
 .userName svg {
-  font-size: 1.5rem;
+  font-size: 2rem;
 }
 </style>

@@ -206,10 +206,7 @@ import { useCategories } from "@/store/categories";
 import { useProducts } from "~/store/products";
 import { useMachines } from "@/store/machines";
 import { useSales } from "~/store/sales";
-
-useSeoMeta({
-  title: "Nova Venda",
-});
+import { usePage } from "@/store/page";
 
 definePageMeta({
   middleware: ["auth"],
@@ -222,6 +219,14 @@ export default {
     const productsStore = useProducts();
     const saleStore = useSales();
 
+    useHead({
+      title: "Nova Venda",
+    });
+
+    const pageStore = usePage();
+
+    pageStore.title = "Nova Venda";
+
     return {
       categoriesStore,
       machineStore,
@@ -232,7 +237,6 @@ export default {
   data() {
     return {
       cartList: [],
-
       modalView: false,
       saleTypeValue: 1,
       finalizationView: false,

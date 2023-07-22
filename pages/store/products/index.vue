@@ -1,5 +1,6 @@
 <template>
   <div class="content">
+    <LoadingModal v-show="loadingModal" />
     <div class="subHeader">
       <div class="filter">
         <input type="text" class="productInput" placeholder="Nome do produto" />
@@ -49,17 +50,38 @@
 import { useCategories } from "~/store/categories";
 import { useProducts } from "~/store/products";
 import CardProductMain from "./_components/CardProductMain.vue";
+import { usePage } from "~/store/page";
+
+const pageStore = usePage();
+
+pageStore.title = "Estoque";
+
+const loadingModal = useState("loadingModal", () => false);
+
+definePageMeta({
+  middleware: ["auth"],
+});
+
+useHead({
+  title: "Estoque",
+});
 
 const categoriesStore = useCategories();
 const productsStore = useProducts();
 
 const onLoad = async () => {
-  await Promise.all([productsStore.loadData(), categoriesStore.loadData()]);
+  try {
+    loadingModal.value = true;
+    await Promise.all([productsStore.loadData(), categoriesStore.loadData()]);
+  } finally {
+    loadingModal.value = false;
+  }
 };
 await onLoad();
 
 const delUpdate = async (id) => {
   try {
+    loadingModal.value = true;
     const response = await productsStore.del(id);
 
     if (response.code === 400) {
@@ -68,20 +90,10 @@ const delUpdate = async (id) => {
   } catch (e) {
     alert("Erro ao excluir produto");
     return;
+  } finally {
+    loadingModal.value = false;
   }
 };
-</script>
-
-<script>
-useSeoMeta({
-  title: "Estoque",
-});
-
-definePageMeta({
-  middleware: ["auth"],
-});
-
-export default {};
 </script>
 
 <style scoped>

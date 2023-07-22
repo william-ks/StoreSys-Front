@@ -25,10 +25,7 @@
 import SalesListMain from "./_components/SalesListMain.vue";
 import { useCategories } from "~/store/categories";
 import { useSales } from "@/store/sales";
-
-useSeoMeta({
-  title: "Vendas",
-});
+import { usePage } from "@/store/page";
 
 definePageMeta({
   middleware: ["auth"],
@@ -36,8 +33,14 @@ definePageMeta({
 
 export default {
   setup() {
+    useHead({
+      title: "Vendas",
+    });
     const categoriesstore = useCategories();
     const saleStore = useSales();
+    const pageStore = usePage();
+
+    pageStore.title = "Vendas";
 
     return {
       saleStore,
